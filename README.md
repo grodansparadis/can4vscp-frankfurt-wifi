@@ -1,7 +1,9 @@
 # can4vscp-frankfurt-wifi
 The Frankfurt wifi CAN4VSCP board
 
-[Hardware is described here][https://github.com/grodansparadis/vscp-din-wireless-esp32-can-z102]
+[Hardware is described here](https://github.com/grodansparadis/vscp-din-wireless-esp32-can-z102)
+
+An Ethernet version is available [here](https://github.com/grodansparadis/can4vscp-frankfurt-eth).
 
 <hr>
 Please support the <a href="https://www.vscp.org">VSCP development</a>. The best way to support the project is 
