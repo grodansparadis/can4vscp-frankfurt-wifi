@@ -1,0 +1,466 @@
+[1/10] Performing build step for 'bootloader'
+[1/1] cd /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/bootloader/esp-idf/esptool_py && /home/akhe/.espressif/python_env/idf5.0_py3.10_env/bin/python /usr/local/src/esp/esp-idf-v5.0.1/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/bootloader/bootloader.bin
+Bootloader binary size 0x6ca0 bytes. 0x360 bytes (3%) free.
+[2/8] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/callbacks-vscp-protocol.c.obj
+FAILED: esp-idf/main/CMakeFiles/__idf_main.dir/callbacks-vscp-protocol.c.obj 
+/home/akhe/.espressif/tools/xtensa-esp32-elf/esp-2022r1-11.2.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\" -DUNITY_INCLUDE_CONFIG_H -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/config -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/main -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common -I/home/akhe/development/VSCP/vscp/src/vscp/common -I/home/akhe/development/VSCP/vscp -I/home/akhe/development/VSCP/vscp-firmware/common -I/usr/local/src/esp/esp-idf-v5.0.1/components/newlib/platform_include -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/esp_additions/include/freertos -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/esp_additions/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/soc -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/soc/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/port/esp32/. -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/port/esp32/private_include -I/usr/local/src/esp/esp-idf-v5.0.1/components/heap/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/log/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/soc/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/soc/esp32/. -I/usr/local/src/esp/esp-idf-v5.0.1/components/soc/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/hal/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/hal/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/hal/platform_port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_rom/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_rom/include/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_rom/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_system/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_system/port/soc -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_system/port/include/private -I/usr/local/src/esp/esp-idf-v5.0.1/components/xtensa/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/xtensa/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_timer/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/include/apps -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/include/apps/sntp -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/lwip/src/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/port/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/port/esp32/include/arch -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__button/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/driver/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/driver/deprecated -I/usr/local/src/esp/esp-idf-v5.0.1/components/driver/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_pm/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_ringbuf/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/interface -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/deprecated/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/control/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/include/sdcard -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/src -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/src/commands/pcap -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/espnow/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/ota/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/provisioning/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/security/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/security/include/protocomm/security -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/utils/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/proto-c -I/usr/local/src/esp/esp-idf-v5.0.1/components/console -I/usr/local/src/esp/esp-idf-v5.0.1/components/vfs/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/fatfs/diskio -I/usr/local/src/esp/esp-idf-v5.0.1/components/fatfs/vfs -I/usr/local/src/esp/esp-idf-v5.0.1/components/fatfs/src -I/usr/local/src/esp/esp-idf-v5.0.1/components/wear_levelling/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_partition/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/sdmmc/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/spiffs/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/app_update/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bootloader_support/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bootloader_support/bootloader_flash/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_app_format/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_http_client/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_https_ota/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_event/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/mbedtls/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/mbedtls/library -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/esp_crt_bundle/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/protobuf-c/protobuf-c -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/include/common -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/include/security -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/include/transports -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/include/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/osi/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/api/include/api -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/btc/profile/esp/blufi/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/btc/profile/esp/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/ans/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/bas/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/dis/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/gap/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/gatt/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/ias/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/ipss/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/lls/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/tps/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/util/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/store/ram/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/store/config/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/porting/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/porting/nimble/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/porting/npl/freertos/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/esp-hci/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_wifi/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_phy/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_phy/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_netif/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/spi_flash/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/nvs_flash/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__led_strip/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__led_strip/interface -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__qrcode/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/efuse/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/efuse/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/pthread/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/app_trace/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/wpa_supplicant/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/wpa_supplicant/port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/wpa_supplicant/esp_supplicant/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/unity/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/unity/unity/src -I/usr/local/src/esp/esp-idf-v5.0.1/components/cmock/CMock/src -I/usr/local/src/esp/esp-idf-v5.0.1/components/http_parser -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp-tls -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp-tls/esp-tls-crypto -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_eth/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_gdbstub/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_gdbstub/xtensa -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_gdbstub/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hid/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/tcp_transport/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_http_server/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_lcd/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_lcd/interface -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_local_ctrl/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_psram/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/espcoredump/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/espcoredump/include/port/xtensa -I/usr/local/src/esp/esp-idf-v5.0.1/components/idf_test/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/idf_test/include/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/ieee802154/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/json/cJSON -I/usr/local/src/esp/esp-idf-v5.0.1/components/mqtt/esp-mqtt/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/perfmon/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/ulp/ulp_common/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/ulp/ulp_common/include/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/wifi_provisioning/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/components/espnow_device/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/components/wifi_prov/include -mlongcalls -Wno-frame-address  -fdiagnostics-color=always -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -Os -freorder-blocks -fmacro-prefix-map=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder=. -fmacro-prefix-map=/usr/local/src/esp/esp-idf-v5.0.1=/IDF -fstrict-volatile-bitfields -Wno-error=unused-but-set-variable -fno-jump-tables -fno-tree-switch-conversion -DconfigENABLE_FREERTOS_DEBUG_OCDAWARE=1 -std=gnu17 -Wno-old-style-declaration -D_GNU_SOURCE -DIDF_VER=\"v5.0.1\" -DESP_PLATFORM -D_POSIX_READER_WRITER_LOCKS -MD -MT esp-idf/main/CMakeFiles/__idf_main.dir/callbacks-vscp-protocol.c.obj -MF esp-idf/main/CMakeFiles/__idf_main.dir/callbacks-vscp-protocol.c.obj.d -o esp-idf/main/CMakeFiles/__idf_main.dir/callbacks-vscp-protocol.c.obj -c /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/main/callbacks-vscp-protocol.c
+In file included from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/main/beta.h:39,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/main/callbacks-vscp-protocol.c:50:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.h:208:20: error: unknown type name 'droplet_config_t'
+  208 | droplet_init(const droplet_config_t *config);
+      |                    ^~~~~~~~~~~~~~~~
+[3/8] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c.obj
+FAILED: esp-idf/main/CMakeFiles/__idf_main.dir/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c.obj 
+/home/akhe/.espressif/tools/xtensa-esp32-elf/esp-2022r1-11.2.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\" -DUNITY_INCLUDE_CONFIG_H -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/config -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/main -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common -I/home/akhe/development/VSCP/vscp/src/vscp/common -I/home/akhe/development/VSCP/vscp -I/home/akhe/development/VSCP/vscp-firmware/common -I/usr/local/src/esp/esp-idf-v5.0.1/components/newlib/platform_include -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/esp_additions/include/freertos -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/esp_additions/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/soc -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/soc/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/port/esp32/. -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/port/esp32/private_include -I/usr/local/src/esp/esp-idf-v5.0.1/components/heap/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/log/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/soc/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/soc/esp32/. -I/usr/local/src/esp/esp-idf-v5.0.1/components/soc/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/hal/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/hal/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/hal/platform_port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_rom/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_rom/include/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_rom/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_system/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_system/port/soc -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_system/port/include/private -I/usr/local/src/esp/esp-idf-v5.0.1/components/xtensa/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/xtensa/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_timer/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/include/apps -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/include/apps/sntp -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/lwip/src/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/port/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/lwip/port/esp32/include/arch -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__button/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/driver/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/driver/deprecated -I/usr/local/src/esp/esp-idf-v5.0.1/components/driver/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_pm/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_ringbuf/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/interface -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_adc/deprecated/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/control/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/include/sdcard -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/src -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/debug/src/commands/pcap -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/espnow/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/ota/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/provisioning/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/security/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/security/include/protocomm/security -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__esp-now/src/utils/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/proto-c -I/usr/local/src/esp/esp-idf-v5.0.1/components/console -I/usr/local/src/esp/esp-idf-v5.0.1/components/vfs/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/fatfs/diskio -I/usr/local/src/esp/esp-idf-v5.0.1/components/fatfs/vfs -I/usr/local/src/esp/esp-idf-v5.0.1/components/fatfs/src -I/usr/local/src/esp/esp-idf-v5.0.1/components/wear_levelling/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_partition/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/sdmmc/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/spiffs/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/app_update/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bootloader_support/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bootloader_support/bootloader_flash/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_app_format/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_http_client/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_https_ota/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_event/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/mbedtls/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/mbedtls/library -I/usr/local/src/esp/esp-idf-v5.0.1/components/mbedtls/esp_crt_bundle/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/protobuf-c/protobuf-c -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/include/common -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/include/security -I/usr/local/src/esp/esp-idf-v5.0.1/components/protocomm/include/transports -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/include/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/osi/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/api/include/api -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/btc/profile/esp/blufi/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/common/btc/profile/esp/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/ans/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/bas/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/dis/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/gap/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/gatt/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/ias/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/ipss/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/lls/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/services/tps/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/util/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/store/ram/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/host/store/config/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/porting/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/porting/nimble/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/porting/npl/freertos/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/nimble/nimble/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/bt/host/nimble/esp-hci/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_wifi/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_phy/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_phy/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_netif/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/spi_flash/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/nvs_flash/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__led_strip/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__led_strip/interface -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/managed_components/espressif__qrcode/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/efuse/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/efuse/esp32/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/pthread/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/app_trace/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/wpa_supplicant/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/wpa_supplicant/port/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/wpa_supplicant/esp_supplicant/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/unity/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/unity/unity/src -I/usr/local/src/esp/esp-idf-v5.0.1/components/cmock/CMock/src -I/usr/local/src/esp/esp-idf-v5.0.1/components/http_parser -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp-tls -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp-tls/esp-tls-crypto -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_eth/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_gdbstub/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_gdbstub/xtensa -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_gdbstub/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_hid/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/tcp_transport/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_http_server/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_lcd/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_lcd/interface -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_local_ctrl/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/esp_psram/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/espcoredump/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/espcoredump/include/port/xtensa -I/usr/local/src/esp/esp-idf-v5.0.1/components/idf_test/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/idf_test/include/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/ieee802154/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/json/cJSON -I/usr/local/src/esp/esp-idf-v5.0.1/components/mqtt/esp-mqtt/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/perfmon/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/ulp/ulp_common/include -I/usr/local/src/esp/esp-idf-v5.0.1/components/ulp/ulp_common/include/esp32 -I/usr/local/src/esp/esp-idf-v5.0.1/components/wifi_provisioning/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/components/espnow_device/include -I/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/components/wifi_prov/include -mlongcalls -Wno-frame-address  -fdiagnostics-color=always -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -Os -freorder-blocks -fmacro-prefix-map=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder=. -fmacro-prefix-map=/usr/local/src/esp/esp-idf-v5.0.1=/IDF -fstrict-volatile-bitfields -Wno-error=unused-but-set-variable -fno-jump-tables -fno-tree-switch-conversion -DconfigENABLE_FREERTOS_DEBUG_OCDAWARE=1 -std=gnu17 -Wno-old-style-declaration -D_GNU_SOURCE -DIDF_VER=\"v5.0.1\" -DESP_PLATFORM -D_POSIX_READER_WRITER_LOCKS -MD -MT esp-idf/main/CMakeFiles/__idf_main.dir/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c.obj -MF esp-idf/main/CMakeFiles/__idf_main.dir/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c.obj.d -o esp-idf/main/CMakeFiles/__idf_main.dir/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c.obj -c /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c
+In file included from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:70:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.h:208:20: error: unknown type name 'droplet_config_t'
+  208 | droplet_init(const droplet_config_t *config);
+      |                    ^~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:112:8: error: unknown type name 'droplet_config_t'
+  112 | static droplet_config_t s_droplet_config = { 0 };
+      |        ^~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:187:8: error: unknown type name 'droplet_provisioning_t'
+  187 | static droplet_provisioning_t s_provisionNodeInfo = { 0 };
+      |        ^~~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_build_l1_heartbeat':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:263:7: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+  263 |   buf[VSCP_ESPNOW_POS_PKT_TYPE] = (PRJDEF_NODE_TYPE << 4) + VSCP_ENCRYPTION_NONE;
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~
+      |       VSCP_ESPNOW_POS_TYPE
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:263:7: note: each undeclared identifier is reported only once for each function it appears in
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_build_l2_heartbeat':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:317:7: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+  317 |   buf[VSCP_ESPNOW_POS_PKT_TYPE] = (PRJDEF_NODE_TYPE << 4) + VSCP_ENCRYPTION_NONE;
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~
+      |       VSCP_ESPNOW_POS_TYPE
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_evToFrame':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:404:7: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+  404 |   buf[VSCP_ESPNOW_POS_PKT_TYPE] = (PRJDEF_NODE_TYPE << 4) + VSCP_ENCRYPTION_AES128;
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~
+      |       VSCP_ESPNOW_POS_TYPE
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_frameToEv':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:502:13: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+  502 |       ((buf[VSCP_ESPNOW_POS_PKT_TYPE] & 0x0f) > VSCP_ENCRYPTION_AES256)) {
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+      |             VSCP_ESPNOW_POS_TYPE
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_sendEvent':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:640:52: error: request for member 'nEncryption' in something not a structure or union
+  640 |                                    s_droplet_config.nEncryption,
+      |                                                    ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:641:76: error: request for member 'pmk' in something not a structure or union
+  641 |                                    (pkey != NULL) ? pkey : s_droplet_config.pmk,
+      |                                                                            ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:642:52: error: request for member 'ttl' in something not a structure or union
+  642 |                                    s_droplet_config.ttl,
+      |                                                    ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_sendEventEx':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:686:52: error: request for member 'nEncryption' in something not a structure or union
+  686 |                                    s_droplet_config.nEncryption,
+      |                                                    ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:687:76: error: request for member 'pmk' in something not a structure or union
+  687 |                                    (pkey != NULL) ? pkey : s_droplet_config.pmk,
+      |                                                                            ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:688:52: error: request for member 'ttl' in something not a structure or union
+  688 |                                    s_droplet_config.ttl,
+      |                                                    ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: At top level:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:710:20: error: unknown type name 'droplet_config_t'
+  710 | droplet_init(const droplet_config_t *config)
+      |                    ^~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_init':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:718:44: error: 'droplet_config_t' undeclared (first use in this function); did you mean 's_droplet_config'?
+  718 |   memcpy(&s_droplet_config, config, sizeof(droplet_config_t));
+      |                                            ^~~~~~~~~~~~~~~~
+      |                                            s_droplet_config
+In file included from /usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/include/freertos/semphr.h:41,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:49:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:720:53: error: request for member 'sizeQueue' in something not a structure or union
+  720 |   g_droplet_rcvqueue = xQueueCreate(s_droplet_config.sizeQueue, sizeof(void *));
+      |                                                     ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/include/freertos/queue.h:162:81: note: in definition of macro 'xQueueCreate'
+  162 |     #define xQueueCreate( uxQueueLength, uxItemSize )    xQueueGenericCreate( ( uxQueueLength ), ( uxItemSize ), ( queueQUEUE_TYPE_BASE ) )
+      |                                                                                 ^~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:734:35: error: 'promiscuous_rx_cb' undeclared (first use in this function)
+  734 |   esp_wifi_set_promiscuous_rx_cb(&promiscuous_rx_cb);
+      |                                   ^~~~~~~~~~~~~~~~~
+In file included from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/esp_intr_alloc.h:11,
+                 from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/esp_cpu.h:20,
+                 from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_hw_support/include/spinlock.h:11,
+                 from /usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos/portmacro.h:74,
+                 from /usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/include/freertos/portable.h:58,
+                 from /usr/local/src/esp/esp-idf-v5.0.1/components/freertos/FreeRTOS-Kernel/include/freertos/FreeRTOS.h:70,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:48:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:738:44: error: 'droplet_send_cb' undeclared (first use in this function); did you mean 'droplet_send_lock'?
+  738 |   ESP_ERROR_CHECK(esp_now_register_send_cb(droplet_send_cb));
+      |                                            ^~~~~~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_err.h:117:30: note: in definition of macro 'ESP_ERROR_CHECK'
+  117 |         esp_err_t err_rc_ = (x);                                        \
+      |                              ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:739:44: error: 'droplet_recv_cb' undeclared (first use in this function); did you mean 'droplet_rcv_task'?
+  739 |   ESP_ERROR_CHECK(esp_now_register_recv_cb(droplet_recv_cb));
+      |                                            ^~~~~~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_err.h:117:30: note: in definition of macro 'ESP_ERROR_CHECK'
+  117 |         esp_err_t err_rc_ = (x);                                        \
+      |                              ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:741:41: error: request for member 'pmk' in something not a structure or union
+  741 |   ESP_ERROR_CHECK(esp_now_set_pmk(config->pmk));
+      |                                         ^~
+/usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_err.h:117:30: note: in definition of macro 'ESP_ERROR_CHECK'
+  117 |         esp_err_t err_rc_ = (x);                                        \
+      |                              ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_rcv_task':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:816:26: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+  816 |     if (prxdata->payload[VSCP_ESPNOW_POS_PKT_TYPE] & 0x0f) {
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~~
+      |                          VSCP_ESPNOW_POS_TYPE
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:831:73: error: request for member 'pmk' in something not a structure or union
+  831 |                                                         s_droplet_config.pmk, // key
+      |                                                                         ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:854:30: error: 'VSCP_ESPNOW_POS_MAGIC' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_ID'?
+  854 |           ((prxdata->payload[VSCP_ESPNOW_POS_MAGIC] << 8) + prxdata->payload[VSCP_ESPNOW_POS_MAGIC + 1])) {
+      |                              ^~~~~~~~~~~~~~~~~~~~~
+      |                              VSCP_ESPNOW_POS_ID
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:869:60: error: 'VSCP_ESPNOW_POS_TTL' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_ID'?
+  869 |     uint8_t ttl                       = --prxdata->payload[VSCP_ESPNOW_POS_TTL];
+      |                                                            ^~~~~~~~~~~~~~~~~~~
+      |                                                            VSCP_ESPNOW_POS_ID
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:878:25: error: request for member 'bForwardEnable' in something not a structure or union
+  878 |     if (s_droplet_config.bForwardEnable && ttl && !VSCP_ESPNOW_ADDR_IS_SELF(prxdata->dst_addr)) {
+      |                         ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:885:57: error: request for member 'pmk' in something not a structure or union
+  885 |                                         s_droplet_config.pmk,
+      |                                                         ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:945:56: error: request for member 'nodeGuid' in something not a structure or union
+  945 |         if (!memcmp(prxdata->dst_addr, s_droplet_config.nodeGuid + 8, ESP_NOW_ETH_ALEN) &&
+      |                                                        ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:953:34: error: request for member 'pmk' in something not a structure or union
+  953 |           memcpy(s_droplet_config.pmk, pev->pdata + 2 + 16, 32);
+      |                                  ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:965:98: error: request for member 'nodeGuid' in something not a structure or union
+  965 |           if (VSCP_ERROR_SUCCESS != (ret = droplet_build_l1_heartbeat(buf, size, s_droplet_config.nodeGuid))) {
+      |                                                                                                  ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:974:51: error: request for member 'pmk' in something not a structure or union
+  974 |                                   s_droplet_config.pmk,
+      |                                                   ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:994:62: error: request for member 'mac' in something not a structure or union
+  994 |                !memcmp(prxdata->src_addr, s_provisionNodeInfo.mac, ESP_NOW_ETH_ALEN)) {
+      |                                                              ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1002:62: error: request for member 'mac' in something not a structure or union
+ 1002 |                !memcmp(prxdata->src_addr, s_provisionNodeInfo.mac, ESP_NOW_ETH_ALEN)) {
+      |                                                              ^
+In file included from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:70:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_recv_cb':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.h:80:32: error: 'ESPNOW_SEC_PACKET_MAX_SIZE' undeclared (first use in this function)
+   80 | #define VSCP_ESPNOW_MAX_FRAME (ESPNOW_SEC_PACKET_MAX_SIZE - VSCP_ESPNOW_MIN_FRAME)
+      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1067:47: note: in expansion of macro 'VSCP_ESPNOW_MAX_FRAME'
+ 1067 |   if ((len < VSCP_ESPNOW_MIN_FRAME) || (len > VSCP_ESPNOW_MAX_FRAME) ||
+      |                                               ^~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1068:14: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+ 1068 |       ((data[VSCP_ESPNOW_POS_PKT_TYPE] & 0x0f) > VSCP_ENCRYPTION_AES256)) {
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~
+      |              VSCP_ESPNOW_POS_TYPE
+In file included from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_check.h:9,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:55:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1088:19: error: 'VSCP_ESPNOW_POS_MAGIC' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_ID'?
+ 1088 |            ((data[VSCP_ESPNOW_POS_MAGIC] << 8) + data[VSCP_ESPNOW_POS_MAGIC + 1]),
+      |                   ^~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:410:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  410 |         if (level==ESP_LOG_ERROR )          { esp_log_write(ESP_LOG_ERROR,      tag, LOG_FORMAT(E, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1084:3: note: in expansion of macro 'ESP_LOGD'
+ 1084 |   ESP_LOGD(TAG,
+      |   ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1104:23: error: request for member 'bFilterAdjacentChannel' in something not a structure or union
+ 1104 |   if (s_droplet_config.bFilterAdjacentChannel && (s_droplet_config.channel != recv_info->rx_ctrl->channel)) {
+      |                       ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1104:67: error: request for member 'channel' in something not a structure or union
+ 1104 |   if (s_droplet_config.bFilterAdjacentChannel && (s_droplet_config.channel != recv_info->rx_ctrl->channel)) {
+      |                                                                   ^
+In file included from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_check.h:9,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:55:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:73: error: request for member 'channel' in something not a structure or union
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |                                                                         ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:410:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  410 |         if (level==ESP_LOG_ERROR )          { esp_log_write(ESP_LOG_ERROR,      tag, LOG_FORMAT(E, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:5: note: in expansion of macro 'ESP_LOGD'
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:73: error: request for member 'channel' in something not a structure or union
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |                                                                         ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:411:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  411 |         else if (level==ESP_LOG_WARN )      { esp_log_write(ESP_LOG_WARN,       tag, LOG_FORMAT(W, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:5: note: in expansion of macro 'ESP_LOGD'
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:73: error: request for member 'channel' in something not a structure or union
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |                                                                         ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:412:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  412 |         else if (level==ESP_LOG_DEBUG )     { esp_log_write(ESP_LOG_DEBUG,      tag, LOG_FORMAT(D, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:5: note: in expansion of macro 'ESP_LOGD'
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:73: error: request for member 'channel' in something not a structure or union
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |                                                                         ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:413:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  413 |         else if (level==ESP_LOG_VERBOSE )   { esp_log_write(ESP_LOG_VERBOSE,    tag, LOG_FORMAT(V, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:5: note: in expansion of macro 'ESP_LOGD'
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:73: error: request for member 'channel' in something not a structure or union
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |                                                                         ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:414:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  414 |         else                                { esp_log_write(ESP_LOG_INFO,       tag, LOG_FORMAT(I, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1105:5: note: in expansion of macro 'ESP_LOGD'
+ 1105 |     ESP_LOGD(TAG, "Filter adjacent channels, %d != %d", s_droplet_config.channel, recv_info->rx_ctrl->channel);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1119:23: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1119 |   if (s_droplet_config.filterWeakSignal && (s_droplet_config.filterWeakSignal > recv_info->rx_ctrl->rssi)) {
+      |                       ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1119:61: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1119 |   if (s_droplet_config.filterWeakSignal && (s_droplet_config.filterWeakSignal > recv_info->rx_ctrl->rssi)) {
+      |                                                             ^
+In file included from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_check.h:9,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:55:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:75: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |                                                                           ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:410:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  410 |         if (level==ESP_LOG_ERROR )          { esp_log_write(ESP_LOG_ERROR,      tag, LOG_FORMAT(E, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:5: note: in expansion of macro 'ESP_LOGD'
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:75: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |                                                                           ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:411:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  411 |         else if (level==ESP_LOG_WARN )      { esp_log_write(ESP_LOG_WARN,       tag, LOG_FORMAT(W, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:5: note: in expansion of macro 'ESP_LOGD'
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:75: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |                                                                           ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:412:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  412 |         else if (level==ESP_LOG_DEBUG )     { esp_log_write(ESP_LOG_DEBUG,      tag, LOG_FORMAT(D, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:5: note: in expansion of macro 'ESP_LOGD'
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:75: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |                                                                           ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:413:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  413 |         else if (level==ESP_LOG_VERBOSE )   { esp_log_write(ESP_LOG_VERBOSE,    tag, LOG_FORMAT(V, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:5: note: in expansion of macro 'ESP_LOGD'
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:75: error: request for member 'filterWeakSignal' in something not a structure or union
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |                                                                           ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:414:137: note: in definition of macro 'ESP_LOG_LEVEL'
+  414 |         else                                { esp_log_write(ESP_LOG_INFO,       tag, LOG_FORMAT(I, format), esp_log_timestamp(), tag, ##__VA_ARGS__); } \
+      |                                                                                                                                         ^~~~~~~~~~~
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:343:38: note: in expansion of macro 'ESP_LOG_LEVEL_LOCAL'
+  343 | #define ESP_LOGD( tag, format, ... ) ESP_LOG_LEVEL_LOCAL(ESP_LOG_DEBUG,   tag, format, ##__VA_ARGS__)
+      |                                      ^~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1120:5: note: in expansion of macro 'ESP_LOGD'
+ 1120 |     ESP_LOGD(TAG, "Filter weak signal strength, %d > %d", s_droplet_config.filterWeakSignal, recv_info->rx_ctrl->rssi);
+      |     ^~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1151:23: error: request for member 'channel' in something not a structure or union
+ 1151 |   if (s_droplet_config.channel && s_droplet_config.channel != VSCP_ESPNOW_CHANNEL_ALL) {
+      |                       ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1151:51: error: request for member 'channel' in something not a structure or union
+ 1151 |   if (s_droplet_config.channel && s_droplet_config.channel != VSCP_ESPNOW_CHANNEL_ALL) {
+      |                                                   ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1152:48: error: request for member 'channel' in something not a structure or union
+ 1152 |     prxdata->rx_ctrl.channel = s_droplet_config.channel;
+      |                                                ^
+In file included from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:70:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_send':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.h:80:32: error: 'ESPNOW_SEC_PACKET_MAX_SIZE' undeclared (first use in this function)
+   80 | #define VSCP_ESPNOW_MAX_FRAME (ESPNOW_SEC_PACKET_MAX_SIZE - VSCP_ESPNOW_MIN_FRAME)
+      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1224:14: note: in expansion of macro 'VSCP_ESPNOW_MAX_FRAME'
+ 1224 |   if (size > VSCP_ESPNOW_MAX_FRAME) {
+      |              ^~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1242:24: error: 'VSCP_ESPNOW_POS_PKT_TYPE' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_TYPE'?
+ 1242 |     nEncrypt = payload[VSCP_ESPNOW_POS_PKT_TYPE] & 0x0f;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~
+      |                        VSCP_ESPNOW_POS_TYPE
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1247:13: error: 'VSCP_ESPNOW_POS_TTL' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_ID'?
+ 1247 |     payload[VSCP_ESPNOW_POS_TTL] = ttl;
+      |             ^~~~~~~~~~~~~~~~~~~
+      |             VSCP_ESPNOW_POS_ID
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1250:32: error: 'VSCP_ESPNOW_POS_MAGIC' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_POS_ID'?
+ 1250 |     esp_fill_random((payload + VSCP_ESPNOW_POS_MAGIC), 2);
+      |                                ^~~~~~~~~~~~~~~~~~~~~
+      |                                VSCP_ESPNOW_POS_ID
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1270:25: error: 'VSCP_ESPNOW_IV_LEN' undeclared (first use in this function); did you mean 'VSCP_ESPNOW_ID_LSB'?
+ 1270 |     esp_fill_random(iv, VSCP_ESPNOW_IV_LEN);
+      |                         ^~~~~~~~~~~~~~~~~~
+      |                         VSCP_ESPNOW_ID_LSB
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1232:12: warning: unused variable 'start_ticks' [-Wunused-variable]
+ 1232 |   uint32_t start_ticks = xTaskGetTickCount();
+      |            ^~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_set_vscp_user_handler_cb':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1372:27: warning: assignment to 'vscp_event_handler_cb_t' {aka 'void (*)(const struct _vscpEvent *, void *)'} from incompatible pointer type 'void (**)(const vscpEvent *, void *)' {aka 'void (**)(const struct _vscpEvent *, void *)'} [-Wincompatible-pointer-types]
+ 1372 |   s_vscp_event_handler_cb = cb;
+      |                           ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_set_attach_network_handler_cb':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1392:39: warning: assignment to 'droplet_attach_network_handler_cb_t' {aka 'void (*)(wifi_pkt_rx_ctrl_t *, void *)'} from incompatible pointer type 'void (**)(wifi_pkt_rx_ctrl_t *, void *)' [-Wincompatible-pointer-types]
+ 1392 |   s_droplet_attach_network_handler_cb = cb;
+      |                                       ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_heartbeat_task':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1440:3: error: unknown type name 'droplet_config_t'
+ 1440 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |   ^~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1440:32: error: 'droplet_config_t' undeclared (first use in this function); did you mean 's_droplet_config'?
+ 1440 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |                                ^~~~~~~~~~~~~~~~
+      |                                s_droplet_config
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1440:50: error: expected expression before ')' token
+ 1440 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |                                                  ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1447:81: error: request for member 'nodeGuid' in something not a structure or union
+ 1447 |   if (VSCP_ERROR_SUCCESS != (ret = droplet_build_l1_heartbeat(buf, size, pconfig->nodeGuid))) {
+      |                                                                                 ^~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1461:54: warning: passing argument 2 of 'esp_wifi_get_channel' from incompatible pointer type [-Wincompatible-pointer-types]
+ 1461 |       if (ESP_OK != (ret = esp_wifi_get_channel(&ch, &second))) {
+      |                                                      ^~~~~~~
+      |                                                      |
+      |                                                      uint8_t * {aka unsigned char *}
+In file included from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:62:
+/usr/local/src/esp/esp-idf-v5.0.1/components/esp_wifi/include/esp_wifi.h:612:70: note: expected 'wifi_second_chan_t *' but argument is of type 'uint8_t *' {aka 'unsigned char *'}
+  612 | esp_err_t esp_wifi_get_channel(uint8_t *primary, wifi_second_chan_t *second);
+      |                                                  ~~~~~~~~~~~~~~~~~~~~^~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1468:42: error: request for member 'pmk' in something not a structure or union
+ 1468 |                          s_droplet_config.pmk,
+      |                                          ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_client_provisioning_task':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1506:3: error: unknown type name 'droplet_config_t'
+ 1506 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |   ^~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1506:32: error: 'droplet_config_t' undeclared (first use in this function); did you mean 's_droplet_config'?
+ 1506 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |                                ^~~~~~~~~~~~~~~~
+      |                                s_droplet_config
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1506:50: error: expected expression before ')' token
+ 1506 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |                                                  ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1541:28: error: request for member 'nodeGuid' in something not a structure or union
+ 1541 |   memcpy(pev->GUID, pconfig->nodeGuid, 16);
+      |                            ^~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1565:40: error: request for member 'lkey' in something not a structure or union
+ 1565 |                        s_droplet_config.lkey,
+      |                                        ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_server_provisioning_task':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1668:3: error: unknown type name 'droplet_config_t'
+ 1668 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |   ^~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1668:32: error: 'droplet_config_t' undeclared (first use in this function); did you mean 's_droplet_config'?
+ 1668 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |                                ^~~~~~~~~~~~~~~~
+      |                                s_droplet_config
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1668:50: error: expected expression before ')' token
+ 1668 |   droplet_config_t *pconfig = (droplet_config_t *) pvParameter;
+      |                                                  ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1684:46: error: request for member 'mac' in something not a structure or union
+ 1684 |   memcpy(peer->peer_addr, s_provisionNodeInfo.mac, ESP_NOW_ETH_ALEN);
+      |                                              ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1725:30: error: request for member 'nEncryption' in something not a structure or union
+ 1725 |     pev->pdata[0]   = pconfig->nEncryption;
+      |                              ^~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1730:51: error: request for member 'mac' in something not a structure or union
+ 1730 |     memcpy(pev->pdata + 2 + 8, s_provisionNodeInfo.mac, ESP_NOW_ETH_ALEN); // Destination GUID
+      |                                                   ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1732:40: error: request for member 'pmk' in something not a structure or union
+ 1732 |     memcpy(pev->pdata + 2 + 16, pconfig->pmk, 32);
+      |                                        ^~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1736:65: error: request for member 'mac' in something not a structure or union
+ 1736 |       if (ESP_OK != (ret = droplet_sendEvent(s_provisionNodeInfo.mac,
+      |                                                                 ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1738:65: error: request for member 'keyLocal' in something not a structure or union
+ 1738 |                                              s_provisionNodeInfo.keyLocal,
+      |                                                                 ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1759:39: error: request for member 'mac' in something not a structure or union
+ 1759 |   esp_now_del_peer(s_provisionNodeInfo.mac);
+      |                                       ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: In function 'droplet_startServerProvisioning':
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1777:29: error: request for member 'mac' in something not a structure or union
+ 1777 |   memcpy(s_provisionNodeInfo.mac, pmac, ESP_NOW_ETH_ALEN);
+      |                             ^
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1778:29: error: request for member 'keyLocal' in something not a structure or union
+ 1778 |   memcpy(s_provisionNodeInfo.keyLocal, pkey, 32);
+      |                             ^
+In file included from /usr/local/src/esp/esp-idf-v5.0.1/components/esp_common/include/esp_check.h:9,
+                 from /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:55:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1780:50: error: request for member 'mac' in something not a structure or union
+ 1780 |   ESP_LOG_BUFFER_HEXDUMP(TAG, s_provisionNodeInfo.mac, ESP_NOW_ETH_ALEN, ESP_LOG_INFO);
+      |                                                  ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:212:51: note: in definition of macro 'ESP_LOG_BUFFER_HEXDUMP'
+  212 |             esp_log_buffer_hexdump_internal( tag, buffer, buff_len, level); \
+      |                                                   ^~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1781:50: error: request for member 'keyLocal' in something not a structure or union
+ 1781 |   ESP_LOG_BUFFER_HEXDUMP(TAG, s_provisionNodeInfo.keyLocal, 32, ESP_LOG_INFO);
+      |                                                  ^
+/usr/local/src/esp/esp-idf-v5.0.1/components/log/include/esp_log.h:212:51: note: in definition of macro 'ESP_LOG_BUFFER_HEXDUMP'
+  212 |             esp_log_buffer_hexdump_internal( tag, buffer, buff_len, level); \
+      |                                                   ^~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c: At top level:
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:193:1: warning: 'droplet_client_init_task' declared 'static' but never defined [-Wunused-function]
+  193 | droplet_client_init_task(void *pvParameter);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1179:1: warning: 'droplet_send_cb' defined but not used [-Wunused-function]
+ 1179 | droplet_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status)
+      | ^~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:1044:1: warning: 'droplet_recv_cb' defined but not used [-Wunused-function]
+ 1044 | droplet_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len)
+      | ^~~~~~~~~~~~~~~
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/common/vscp-espnow.c:170:16: warning: 's_vscp_zero_guid' defined but not used [-Wunused-variable]
+  170 | static uint8_t s_vscp_zero_guid[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      |                ^~~~~~~~~~~~~~~~
+ninja: build stopped: subcommand failed.
