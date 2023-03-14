@@ -213,7 +213,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=Frankfurt_eth
+CMAKE_PROJECT_NAME:STATIC=Frankfurt_wifi_alpha
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/home/akhe/.espressif/tools/xtensa-esp32-elf/esp-2022r1-11.2.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib
@@ -300,6 +300,15 @@ Frankfurt_eth_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 Frankfurt_eth_SOURCE_DIR:STATIC=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha
+
+//Value Computed by CMake
+Frankfurt_wifi_alpha_BINARY_DIR:STATIC=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build
+
+//Value Computed by CMake
+Frankfurt_wifi_alpha_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+Frankfurt_wifi_alpha_SOURCE_DIR:STATIC=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha
 
 //Generate the auto-generated files as needed
 GEN_FILES:BOOL=

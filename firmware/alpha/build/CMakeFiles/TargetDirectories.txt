@@ -9,7 +9,7 @@
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/flash.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/encrypted-flash.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/_project_elf_src.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/Frankfurt_eth.elf.dir
+/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/Frankfurt_wifi_alpha.elf.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/size.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/size-files.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/CMakeFiles/size-components.dir

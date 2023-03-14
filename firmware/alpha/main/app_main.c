@@ -12,37 +12,23 @@
 #include "esp_system.h"
 #include "esp_wifi.h"
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0)
 #include "esp_mac.h"
-#endif
 
 #include "espnow.h"
 #include "espnow_utils.h"
 
-#ifdef CONFIG_APP_ESPNOW_CONTROL
 #include "espnow_ctrl.h"
-#endif
+
 
 #include "iot_button.h"
 
-#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 0, 0)
-#include "driver/rmt.h"
-#endif
 #include "led_strip.h"
 
 #include <wifi_provisioning/manager.h>
 
-#ifdef CONFIG_APP_WIFI_PROVISION
 #include "wifi_prov.h"
-#endif
 
-#ifdef CONFIG_APP_ESPNOW_INITIATOR
 #include "initiator.h"
-#endif
-
-#ifdef CONFIG_APP_ESPNOW_RESPONDER
-#include "responder.h"
-#endif
 
 static const char *TAG = "app";
 
@@ -63,20 +49,15 @@ static const char *TAG = "app";
 #define LED_STRIP_GPIO        GPIO_NUM_38
 #endif
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+
 #if !CONFIG_IDF_TARGET_ESP32C2
 static led_strip_handle_t g_strip_handle = NULL;
 #endif
-#else
-static led_strip_t *g_strip_handle = NULL;
-#endif
 
-#if defined(CONFIG_APP_ESPNOW_CONTROL) && defined(CONFIG_APP_ESPNOW_INITIATOR)
 #if CONFIG_IDF_TARGET_ESP32C2 || CONFIG_IDF_TARGET_ESP32C3
 #define CONTROL_KEY_GPIO        GPIO_NUM_9
 #else
 #define CONTROL_KEY_GPIO        GPIO_NUM_0
-#endif
 
 typedef enum {
     APP_ESPNOW_CTRL_INIT,
@@ -86,8 +67,6 @@ typedef enum {
 
 static app_espnow_ctrl_status_t s_espnow_ctrl_status = APP_ESPNOW_CTRL_INIT;
 #endif
-
-#if defined(CONFIG_APP_WIFI_PROVISION) || defined(CONFIG_APP_ESPNOW_PROVISION)
 
 #define WIFI_PROV_KEY_GPIO      GPIO_NUM_0
 
@@ -99,11 +78,10 @@ typedef enum {
 } app_wifi_prov_status_t;
 
 static app_wifi_prov_status_t s_wifi_prov_status = APP_WIFI_PROV_INIT;
-#endif
 
 static void app_led_init(void)
 {
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
+#ifdef VSCP_PROJDEF_LED_STRIP
 #if CONFIG_IDF_TARGET_ESP32C2
     gpio_reset_pin(LED_RED_GPIO);
     gpio_reset_pin(LED_GREEN_GPIO);
@@ -130,13 +108,12 @@ static void app_led_init(void)
     /* Set all LED off to clear all pixels */
     led_strip_clear(g_strip_handle);
 #endif
-#else
-    g_strip_handle = led_strip_init(RMT_CHANNEL_0, LED_STRIP_GPIO, 1);
 #endif
 }
 
 void app_led_set_color(uint8_t red, uint8_t green, uint8_t blue)
 {
+#ifdef VSCP_PROJDEF_LED_STRIP  
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
 #if CONFIG_IDF_TARGET_ESP32C2
     gpio_set_level(LED_RED_GPIO, red > 0 ? 0 : 1);
@@ -149,6 +126,7 @@ void app_led_set_color(uint8_t red, uint8_t green, uint8_t blue)
 #else
     g_strip_handle->set_pixel(g_strip_handle, 0, red, green, blue);
     g_strip_handle->refresh(g_strip_handle, 100);
+#endif
 #endif
 }
 
@@ -166,8 +144,7 @@ static void app_wifi_event_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-#ifdef CONFIG_APP_ESPNOW_CONTROL
-#if CONFIG_APP_ESPNOW_INITIATOR
+
 static void app_initiator_send_press_cb(void *arg, void *usr_data)
 {
     static bool status = 0;
@@ -226,63 +203,8 @@ static void app_control_button_init(void)
     iot_button_register_cb(button_handle, BUTTON_LONG_PRESS_START, app_initiator_unbind_press_cb, NULL);
 }
 
-#elif CONFIG_APP_ESPNOW_RESPONDER
 
-static void app_espnow_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data)
-{
-    if (base != ESP_EVENT_ESPNOW) {
-        return;
-    }
 
-    switch (id) {
-    case ESP_EVENT_ESPNOW_CTRL_BIND: {
-        espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
-        ESP_LOGI(TAG, "bind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
-
-        app_led_set_color(0, 255, 0);
-        break;
-    }
-
-    case ESP_EVENT_ESPNOW_CTRL_UNBIND: {
-        espnow_ctrl_bind_info_t *info = (espnow_ctrl_bind_info_t *)event_data;
-        ESP_LOGI(TAG, "unbind, uuid: " MACSTR ", initiator_type: %d", MAC2STR(info->mac), info->initiator_attribute);
-
-        app_led_set_color(255, 0, 0);
-        break;
-    }
-
-    default:
-        break;
-    }
-}
-
-static void app_responder_ctrl_data_cb(espnow_attribute_t initiator_attribute,
-                                       espnow_attribute_t responder_attribute,
-                                       uint32_t status)
-{
-    ESP_LOGI(TAG, "app_responder_ctrl_data_cb, initiator_attribute: %d, responder_attribute: %d, value: %" PRIu32 "",
-             initiator_attribute, responder_attribute, status);
-
-    if (status) {
-        app_led_set_color(255, 255, 255);
-    } else {
-        app_led_set_color(0, 0, 0);
-    }
-}
-
-static void app_control_responder_init(void)
-{
-    esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ESPNOW_CTRL_BIND, app_espnow_event_handler, NULL);
-    esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ESPNOW_CTRL_UNBIND, app_espnow_event_handler, NULL);
-
-    ESP_ERROR_CHECK(espnow_ctrl_responder_bind(30 * 1000, -55, NULL));
-    espnow_ctrl_responder_data(app_responder_ctrl_data_cb);
-}
-#endif
-#endif
-
-#if defined(CONFIG_APP_WIFI_PROVISION) || defined(CONFIG_APP_ESPNOW_PROVISION)
-#ifdef CONFIG_APP_ESPNOW_INITIATOR
 static void app_wifi_prov_over_espnow_start_press_cb(void *arg, void *usr_data)
 {
     ESP_ERROR_CHECK(!(BUTTON_SINGLE_CLICK == iot_button_get_event(arg)));
@@ -306,22 +228,18 @@ static void app_wifi_prov_over_espnow_start_press_cb(void *arg, void *usr_data)
         ESP_LOGI(TAG, "Please start WiFi provisioning firstly");
     }
 }
-#endif
+
 
 static void app_wifi_prov_start_press_cb(void *arg, void *usr_data)
 {
     ESP_ERROR_CHECK(!(BUTTON_DOUBLE_CLICK == iot_button_get_event(arg)));
 
     if (s_wifi_prov_status == APP_WIFI_PROV_INIT) {
-#ifdef CONFIG_APP_WIFI_PROVISION
+
         ESP_LOGI(TAG, "Starting WiFi provisioning on initiator");
 
         wifi_prov();
-#elif defined(CONFIG_APP_ESPNOW_RESPONDER)
-        ESP_LOGI(TAG, "Start WiFi provisioning over ESP-NOW on responder");
 
-        app_espnow_prov_responder_start();
-#endif
         s_wifi_prov_status = APP_WIFI_PROV_START;
 
         app_led_set_color(255, 255, 255);
@@ -338,10 +256,7 @@ static void app_wifi_prov_reset_press_cb(void *arg, void *usr_data)
 
     ESP_LOGI(TAG, "Reset WiFi provisioning information and restart");
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0)
     wifi_prov_mgr_reset_provisioning();
-#endif
-
     esp_wifi_disconnect();
     esp_restart();
 }
@@ -361,70 +276,31 @@ static void app_wifi_prov_button_init(void)
 
     button_handle_t button_handle = iot_button_create(&button_config);
 
-#ifdef CONFIG_APP_ESPNOW_INITIATOR
     iot_button_register_cb(button_handle, BUTTON_SINGLE_CLICK, app_wifi_prov_over_espnow_start_press_cb, NULL);
-#endif
     iot_button_register_cb(button_handle, BUTTON_DOUBLE_CLICK, app_wifi_prov_start_press_cb, NULL);
     iot_button_register_cb(button_handle, BUTTON_LONG_PRESS_START, app_wifi_prov_reset_press_cb, NULL);
 }
-#endif
 
 static void app_wifi_init()
 {
-#if CONFIG_APP_WIFI_PROVISION
     wifi_prov_init();
-#else
-    ESP_ERROR_CHECK(esp_netif_init());
-
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    esp_netif_create_default_wifi_sta();
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
-    ESP_ERROR_CHECK(esp_wifi_start());
-#endif
 }
 
 void app_main()
 {
     espnow_storage_init();
-
     app_wifi_init();
 
     espnow_config_t espnow_config = ESPNOW_INIT_CONFIG_DEFAULT();
 
     espnow_config.qsize = CONFIG_APP_ESPNOW_QUEUE_SIZE;
-#ifdef CONFIG_APP_ESPNOW_SECURITY
     espnow_config.sec_enable = 1;
-#endif
 
     espnow_init(&espnow_config);
 
     app_led_init();
-
-#if defined(CONFIG_APP_WIFI_PROVISION) || defined(CONFIG_APP_ESPNOW_PROVISION)
     app_wifi_prov_button_init();
-#endif
-
-#if CONFIG_APP_ESPNOW_INITIATOR
     app_espnow_initiator_register();
-
-#ifdef CONFIG_APP_ESPNOW_CONTROL
     app_control_button_init();
-#endif
-
     app_espnow_initiator();
-#elif CONFIG_APP_ESPNOW_RESPONDER
-    app_espnow_responder_register();
-
-#ifdef CONFIG_APP_ESPNOW_CONTROL
-    app_control_responder_init();
-#endif
-
-    app_espnow_responder();
-#endif
 }

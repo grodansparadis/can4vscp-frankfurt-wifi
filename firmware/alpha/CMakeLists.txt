@@ -7,13 +7,15 @@ if(NOT DEFINED IDF_TARGET)
     set(IDF_TARGET "esp32")
 endif()
 
+set(PROJECT_VER "0.0.1")
+
 # include(${ESPNOW_PATH}/component.cmake)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 if(DEFINED ENV{PROJECT_NAME})
   set(PROJECT_NAME $ENV{PROJECT_NAME})
 else()
-  set(PROJECT_NAME "Frankfurt_eth")
+  set(PROJECT_NAME "Frankfurt_wifi_alpha")
 endif(DEFINED ENV{PROJECT_NAME})
 
 project(${PROJECT_NAME})
