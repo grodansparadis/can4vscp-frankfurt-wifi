@@ -31,10 +31,10 @@ static const char *TAG = "led_indicator";
     return (ret);                                                                                                      \
   }
 
-#define LED_INDICATOR_CHECK_GOTO(a, str, lable)                                                                        \
+#define LED_INDICATOR_CHECK_GOTO(a, str, label)                                                                        \
   if (!(a)) {                                                                                                          \
     ESP_LOGE(TAG, "%s:%d (%s):%s", __FILE__, __LINE__, __FUNCTION__, str);                                             \
-    goto lable;                                                                                                        \
+    goto label;                                                                                                        \
   }
 
 #define NULL_ACTIVE_BLINK -1

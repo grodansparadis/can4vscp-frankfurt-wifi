@@ -58,8 +58,8 @@
 
 #include "urldecode.h"
 
+#include "alpha.h"
 #include "websrv.h"
-#include "main.h"
 
 #ifdef CONFIG_EXAMPLE_PROV_TRANSPORT_BLE
 #include <wifi_provisioning/scheme_ble.h>
@@ -75,7 +75,6 @@
 // External from main
 extern nvs_handle_t g_nvsHandle;
 extern node_persistent_config_t g_persistent;
-extern esp_netif_t *g_netif;
 extern vprintf_like_t g_stdLogFunc;
 #define TAG __func__
 
@@ -721,38 +720,42 @@ info_get_handler(httpd_req_t *req)
           MAC2STR(mac));
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
+  esp_netif_t* netif=NULL;
+  netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
   esp_netif_ip_info_t ifinfo;
-  esp_netif_get_ip_info(g_netif, &ifinfo);
-  // printf("IP address (wifi): " IPSTR "\n", IP2STR(&ifinfo.ip));
-  sprintf(buf,
-          "<tr><td class=\"name\">IP address (wifi):</td><td class=\"prop\">" IPSTR "</td></tr>",
-          IP2STR(&ifinfo.ip));
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+  if (NULL != netif) {
+    esp_netif_get_ip_info(netif, &ifinfo);
+    // printf("IP address (wifi): " IPSTR "\n", IP2STR(&ifinfo.ip));
+    sprintf(buf,
+            "<tr><td class=\"name\">IP address (wifi):</td><td class=\"prop\">" IPSTR "</td></tr>",
+            IP2STR(&ifinfo.ip));
+    httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  // printf("Subnet Mask: " IPSTR "\n", IP2STR(&ifinfo.netmask));
-  sprintf(buf,
-          "<tr><td class=\"name\">Subnet Mask:</td><td class=\"prop\">" IPSTR "</td></tr>",
-          IP2STR(&ifinfo.netmask));
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+    // printf("Subnet Mask: " IPSTR "\n", IP2STR(&ifinfo.netmask));
+    sprintf(buf,
+            "<tr><td class=\"name\">Subnet Mask:</td><td class=\"prop\">" IPSTR "</td></tr>",
+            IP2STR(&ifinfo.netmask));
+    httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  // printf("Gateway: " IPSTR "\n", IP2STR(&ifinfo.gw));
-  sprintf(buf, "<tr><td class=\"name\">Gateway:</td><td class=\"prop\">" IPSTR "</td></tr>", IP2STR(&ifinfo.gw));
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+    // printf("Gateway: " IPSTR "\n", IP2STR(&ifinfo.gw));
+    sprintf(buf, "<tr><td class=\"name\">Gateway:</td><td class=\"prop\">" IPSTR "</td></tr>", IP2STR(&ifinfo.gw));
+    httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  esp_netif_dns_info_t dns;
-  esp_netif_get_dns_info(g_netif, ESP_NETIF_DNS_MAIN, &dns);
-  // printf("DNS DNS Server1: " IPSTR "\n", IP2STR(&dns.ip.u_addr.ip4));
-  sprintf(buf,
-          "<tr><td class=\"name\">DNS Server1:</td><td class=\"prop\">" IPSTR "</td></tr>",
-          IP2STR(&dns.ip.u_addr.ip4));
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
-  esp_netif_get_dns_info(g_netif, ESP_NETIF_DNS_BACKUP, &dns);
+    esp_netif_dns_info_t dns;
+    esp_netif_get_dns_info(netif, ESP_NETIF_DNS_MAIN, &dns);
+    // printf("DNS DNS Server1: " IPSTR "\n", IP2STR(&dns.ip.u_addr.ip4));
+    sprintf(buf,
+            "<tr><td class=\"name\">DNS Server1:</td><td class=\"prop\">" IPSTR "</td></tr>",
+            IP2STR(&dns.ip.u_addr.ip4));
+    httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+    esp_netif_get_dns_info(netif, ESP_NETIF_DNS_BACKUP, &dns);
 
-  // printf("DNS Server2: " IPSTR "\n", IP2STR(&dns.ip.u_addr.ip4));
-  sprintf(buf,
-          "<tr><td class=\"name\">DNS Server2:</td><td class=\"prop\">" IPSTR "</td></tr>",
-          IP2STR(&dns.ip.u_addr.ip4));
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+    // printf("DNS Server2: " IPSTR "\n", IP2STR(&dns.ip.u_addr.ip4));
+    sprintf(buf,
+            "<tr><td class=\"name\">DNS Server2:</td><td class=\"prop\">" IPSTR "</td></tr>",
+            IP2STR(&dns.ip.u_addr.ip4));
+    httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+  }
 
   sprintf(buf, "</table>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
@@ -830,30 +833,35 @@ upgrade_get_handler(httpd_req_t *req)
   sprintf(buf, WEBPAGE_START_TEMPLATE, g_persistent.nodeName, "Upgrade firmware");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  sprintf(buf,"<h3>Upgrade from web server</h3>");
+  sprintf(buf, "<h3>Upgrade from web server</h3>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, "<div><form id=but3 class=\"button\" action='/upgrdsrv' method='get'><fieldset>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, "OTA URL:<input type=\"text\"  value=\"%s\" >", PRJDEF_FIRMWARE_UPGRADE_URL);
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);  
+  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, "<button class=\"bgrn bgrn:hover\" >Start Upgrade</button></fieldset></form></div>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   // ----- Local -----
 
-  sprintf(buf,"<h3>Upgrade from local file</h3><div> <span style=\"color:red;font-family:verdana;font-size:300%%;\" id=\"progress\" /></div>");
+  sprintf(buf,
+          "<h3>Upgrade from local file</h3><div> <span style=\"color:red;font-family:verdana;font-size:300%%;\" "
+          "id=\"progress\" /></div>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, "<div><fform id=but3 class=\"button\" action='/upgrdlocal' method='post'><fieldset>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  sprintf(buf, "<label for=\"otafile\">OTA firmware file:</label><input type=\"file\" id=\"otafile\" name=\"otafile\" />");
-  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN); 
+  sprintf(buf,
+          "<label for=\"otafile\">OTA firmware file:</label><input type=\"file\" id=\"otafile\" name=\"otafile\" />");
+  httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  sprintf(buf, "<button class=\"bgrn bgrn:hover\" id=\"upload\" onclick=\"startUpload();\">Start Upgrade</button></fieldset></fform></div>");
+  sprintf(buf,
+          "<button class=\"bgrn bgrn:hover\" id=\"upload\" onclick=\"startUpload();\">Start "
+          "Upgrade</button></fieldset></fform></div>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, WEBPAGE_END_TEMPLATE, appDescr->version, g_persistent.nodeName);
@@ -906,7 +914,6 @@ upgrdsrv_get_handler(httpd_req_t *req)
       }
 
       VSCP_FREE(param);
-
     }
 
     VSCP_FREE(req_buf);
@@ -917,12 +924,12 @@ upgrdsrv_get_handler(httpd_req_t *req)
   const char *resp_str = "<html><head><meta charset='utf-8'><meta http-equiv=\"refresh\" content=\"10;url=index.html\" "
                          "/></head><body><h1>Firmware upgrade in progress...</h1></body></html>";
   httpd_resp_send(req, resp_str, HTTPD_RESP_USE_STRLEN);
-  
+
   // Let content render
   vTaskDelay(2000 / portTICK_PERIOD_MS);
 
   // Start the OTA task
-  startOTA();
+  // startOTA();
 
   return ESP_OK;
 }
@@ -932,7 +939,7 @@ upgrdsrv_get_handler(httpd_req_t *req)
 //
 // Handle OTA file upload
 // https://github.com/Jeija/esp32-softap-ota
-// 
+//
 
 esp_err_t
 upgrdlocal_post_handler(httpd_req_t *req)
@@ -973,7 +980,7 @@ upgrdlocal_post_handler(httpd_req_t *req)
     return ESP_FAIL;
   }
 
-  //httpd_resp_sendstr(req, "Firmware update complete, rebooting now!\n");
+  // httpd_resp_sendstr(req, "Firmware update complete, rebooting now!\n");
   const char *resp_str = "<html><head><meta charset='utf-8'><meta http-equiv=\"refresh\" content=\"2;url=index.html\" "
                          "/></head><body><h1>Firmware update complete, rebooting now!...</h1></body></html>";
   httpd_resp_send(req, resp_str, HTTPD_RESP_USE_STRLEN);
@@ -985,13 +992,16 @@ upgrdlocal_post_handler(httpd_req_t *req)
   return ESP_OK;
 }
 
-static const httpd_uri_t upgrdlocal = { .uri = "/upgrdlocal", .method = HTTP_POST, .handler = upgrdlocal_post_handler, .user_ctx = NULL };
+static const httpd_uri_t upgrdlocal = { .uri      = "/upgrdlocal",
+                                        .method   = HTTP_POST,
+                                        .handler  = upgrdlocal_post_handler,
+                                        .user_ctx = NULL };
 
 ///////////////////////////////////////////////////////////////////////////////
 // upgrdlocal_get_handler
 //
 // HTTP GET handler for update of firmware
-// 
+//
 // static esp_err_t
 // upgrdlocal_get_handler(httpd_req_t *req)
 // {
@@ -1105,8 +1115,8 @@ doprov_get_handler(httpd_req_t *req)
   char *buf = NULL;
   char *req_buf;
   size_t req_buf_len;
-  const uint8_t *pmac = NULL;
-  const uint8_t *pkey = NULL;
+  uint8_t *pmac = NULL;
+  uint8_t *pkey = NULL;
 
   buf = (char *) VSCP_CALLOC(CHUNK_BUFSIZE);
   if (NULL == buf) {
@@ -1190,7 +1200,7 @@ doprov_get_handler(httpd_req_t *req)
   }
 
   // Start the provisioning of the client node
-  droplet_startServerProvisioning(pmac, pkey);
+  // droplet_startServerProvisioning(pmac, pkey);
 
   // Parameters not needed anymore
   VSCP_FREE(pmac);
@@ -1418,8 +1428,6 @@ mainpg_get_handler(httpd_req_t *req)
   return ESP_OK;
 }
 
-
-
 // static const httpd_uri_t mainpg = { .uri     = "/index.html",
 //                                    .method  = HTTP_GET,
 //                                    .handler = mainpg_get_handler,
@@ -1559,7 +1567,7 @@ config_module_get_handler(httpd_req_t *req)
     sprintf(pmkstr + 2 * i, "%02X", g_persistent.pmk[i]);
   }
   sprintf(buf,
-          "Primay key (32 bytes hex):<input type=\"text\" name=\"pmk\" maxlength=\"64\" size=\"20\" value=\"%s\" >",
+          "Primay key (16 bytes hex):<input type=\"text\" name=\"pmk\" maxlength=\"64\" size=\"20\" value=\"%s\" >",
           pmkstr);
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   VSCP_FREE(pmkstr);
@@ -1633,7 +1641,7 @@ do_config_module_get_handler(httpd_req_t *req)
         strncpy(g_persistent.nodeName, pdecoded, 31);
         VSCP_FREE(pdecoded);
 
-        setAccessPointParameters();
+        // setAccessPointParameters();
 
         // Write changed value to persistent storage
         rv = nvs_set_str(g_nvsHandle, "node_name", g_persistent.nodeName);
@@ -1648,8 +1656,8 @@ do_config_module_get_handler(httpd_req_t *req)
       // pmk
       if (ESP_OK == (rv = httpd_query_key_value(buf, "pmk", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => pmk=%s", param);
-        memset(g_persistent.pmk, 0, 32);
-        vscp_fwhlp_hex2bin(g_persistent.pmk, 32, param);
+        memset(g_persistent.pmk, 0, 16);
+        vscp_fwhlp_hex2bin(g_persistent.pmk, 16, param);
 
         // Write changed value to persistent storage
         rv = nvs_set_blob(g_nvsHandle, "pmk", g_persistent.pmk, sizeof(g_persistent.pmk));
@@ -2022,7 +2030,7 @@ config_droplet_get_handler(httpd_req_t *req)
     VSCP_FREE(req_buf);
   }
 
-  sprintf(buf, WEBPAGE_START_TEMPLATE, g_persistent.nodeName, "Droplet Configuration");
+  sprintf(buf, WEBPAGE_START_TEMPLATE, g_persistent.nodeName, "ESPNOW Configuration");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, "<div><form id=but3 class=\"button\" action='/docfgdroplet' method='get'><fieldset>");
@@ -2064,6 +2072,8 @@ config_droplet_get_handler(httpd_req_t *req)
           g_persistent.dropletForwardSwitchChannel ? "checked" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
+/*
+  // Encryption
   sprintf(buf, "<br />Encryption:<select  name=\"enc\" >");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
@@ -2084,6 +2094,7 @@ config_droplet_get_handler(httpd_req_t *req)
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf, "</select>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
+*/
 
   sprintf(buf, "<br>Queue size (32):<input type=\"text\" name=\"qsize\" value=\"%d\" >", g_persistent.dropletSizeQueue);
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
@@ -2151,7 +2162,7 @@ do_config_droplet_get_handler(httpd_req_t *req)
       }
 
       // Write changed value to persistent storage
-      rv  = nvs_set_u8(g_nvsHandle, "drop_enable", g_persistent.dropletEnable);
+      rv = nvs_set_u8(g_nvsHandle, "drop_enable", g_persistent.dropletEnable);
       if (rv != ESP_OK) {
         ESP_LOGE(TAG, "Failed to update droplet enable");
       }
@@ -2293,6 +2304,7 @@ do_config_droplet_get_handler(httpd_req_t *req)
         ESP_LOGE(TAG, "Error getting droplet rssi => rv=%d", rv);
       }
 
+/*
       // Encryption
       if (ESP_OK == (rv = httpd_query_key_value(buf, "enc", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => enc=%s", param);
@@ -2305,7 +2317,7 @@ do_config_droplet_get_handler(httpd_req_t *req)
       else {
         ESP_LOGE(TAG, "Error getting droplet enc => rv=%d", rv);
       }
-
+*/
       rv = nvs_commit(g_nvsHandle);
       if (rv != ESP_OK) {
         ESP_LOGE(TAG, "Failed to commit updates to nvs\n");
@@ -2442,10 +2454,10 @@ do_config_vscplink_get_handler(httpd_req_t *req)
       }
 
       // Write changed value to persistent storage
-      rv  = nvs_set_u8(g_nvsHandle, "vscp_enable", g_persistent.vscplinkEnable);
+      rv = nvs_set_u8(g_nvsHandle, "vscp_enable", g_persistent.vscplinkEnable);
       if (rv != ESP_OK) {
         ESP_LOGE(TAG, "Failed to update vscp link enable");
-      }      
+      }
 
       // url
       if (ESP_OK == (rv = httpd_query_key_value(buf, "url", param, WEBPAGE_PARAM_SIZE))) {
@@ -2671,7 +2683,7 @@ do_config_mqtt_get_handler(httpd_req_t *req)
       nvs_set_u8(g_nvsHandle, "mqtt_enable", g_persistent.mqttEnable);
       if (rv != ESP_OK) {
         ESP_LOGE(TAG, "Failed to update MQTT enable");
-      }      
+      }
 
       // url
       if (ESP_OK == (rv = httpd_query_key_value(buf, "url", param, WEBPAGE_PARAM_SIZE))) {
@@ -2943,7 +2955,7 @@ do_config_web_get_handler(httpd_req_t *req)
       }
 
       // Write changed value to persistent storage
-      rv  = nvs_set_u8(g_nvsHandle, "web_enable", g_persistent.webEnable);
+      rv = nvs_set_u8(g_nvsHandle, "web_enable", g_persistent.webEnable);
       if (rv != ESP_OK) {
         ESP_LOGE(TAG, "Failed to update web enable");
       }
@@ -3532,7 +3544,7 @@ default_get_handler(httpd_req_t *req)
       ESP_LOGE(TAG, "No auth value received");
     }
 
-    char *auth_credentials = http_auth_basic(DEFAULT_TCPIP_USER, DEFAULT_TCPIP_PASSWORD);
+    char *auth_credentials = http_auth_basic(PRJDEF_DEFAULT_TCPIP_USER, PRJDEF_DEFAULT_TCPIP_PASSWORD);
     if (!auth_credentials) {
       ESP_LOGE(TAG, "No enough memory for basic authorization credentials");
       VSCP_FREE(buf);

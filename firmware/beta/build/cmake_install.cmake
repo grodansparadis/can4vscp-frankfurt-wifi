@@ -1,4 +1,4 @@
-# Install script for directory: /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder
+# Install script for directory: /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/esp-idf/cmake_install.cmake")
+  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,4 +1,4 @@
-# Install script for directory: /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/managed_components/espressif__esp-now
+# Install script for directory: /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/components/espressif__esp-now
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

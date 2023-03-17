@@ -7,6 +7,15 @@
 #ifndef _VSCP_PROJDEFS_H_
 #define _VSCP_PROJDEFS_H_
 
+// Define one of
+//#define VSCP_PROJDEF_LED_STRIP
+#define VSCP_PROJDEF_LED_SIMPLE
+
+/*!
+  Name of device for level II capabilities announcement event.
+*/
+#define THIS_FIRMWARE_DEVICE_NAME "Frankdurt wifi alpha"
+
 // ----------------------------------------------------------------------------
 //                        VSCP helper lib defines
 // ----------------------------------------------------------------------------
@@ -83,10 +92,10 @@
 
 // Wifi mode
 // ESPNOW_WIFI_MODE_STATION or ESPNOW_WIFI_MODE_STATION_SOFTAP
-#define PRJDEF_VSCP_ESPNOW_WIFI_MODE WIFI_MODE_APSTA
+#define PRJDEF_VSCP_ESPNOW_WIFI_MODE WIFI_MODE_STA
 
 // ESP_IF_WIFI_AP or WIFI_MODE_STA
-#define PRJDEF_VSCP_ESPNOW_WIFI_IF ESP_IF_WIFI_AP
+#define PRJDEF_VSCP_ESPNOW_WIFI_IF ESP_IF_WIFI_STA
 
 // Proof of Possession (PoP) string used to authorize session and derive shared key.
 // #define VSCP_ESPNOW_SESSION_POP    "ESPNOW VSCP node ver 1"
@@ -113,81 +122,11 @@
 
 /**
   ----------------------------------------------------------------------------
-                              Access Point
-  ----------------------------------------------------------------------------
-*/
-
-// Channel for access point
-#define PRJDEF_AP_CHANNEL 8
-
-// Min 8 characters
-#define PRJDEF_AP_PASSWORD ("0123456789")
-
-// Maximum number of connetions to AP
-#define PRJDEF_AP_MAX_CONNECTIONS 1
-
-// Interval between beacon frames
-#define PRJDEF_AP_BEACON_INTERVAL 100
-
-/**
-  ----------------------------------------------------------------------------
                               VSCP TCP/IP Link
   ----------------------------------------------------------------------------
   Defines for firmware level II
 */
 
-/*!
-  Max buffer for level II events. The buffer size is needed to
-  convert an event to string. To handle all level II events
-  512*5 + 110 = 2670 bytes is needed. In reality this is
-  seldom needed so the value can be set to a lower value. In this
-  case one should check the max data size for events that are of
-  interest and set the max size accordingly
-*/
-#define PRJDEF_VSCP_LINK_MAX_BUF (2680)
-
-/*!
-  Define to show custom help. The callback is called so you can respond
-  with your custom help text.  This can be used to save memory if you work
-  on a constraint environment.
-
-  If zero standard help is shown.
-*/
-// #define VSCP_LINK_CUSTOM_HELP_TEXT
-
-/**
- * Undefine to send incoming events to all clients (default).
- */
-#define PRJDEF_VSCP_LINK_SEND_TO_ALL
-
-/*!
-  Size for inout buffer and outputbuffer.
-  Must be at least one for each fifo
-*/
-#define PRJDEF_VSCP_LINK_MAX_IN_FIFO_SIZE  (10)
-#define PRJDEF_VSCP_LINK_MAX_OUT_FIFO_SIZE (10)
-
-/**
- * Enable command also when rcvloop is active
- * Only 'quit' and 'quitloop' will work if
- * set to zero.
- */
-#define PRJDEF_VSCP_LINK_ENABLE_RCVLOOP_CMD (1)
-
-/*!
-  Name of device for level II capabilities announcement event.
-*/
-#define THIS_FIRMWARE_DEVICE_NAME "VSCP Wireless CAN Gateway"
-
-/**
- * If defined an UDP heartbeat is broadcasted every minute.
- */
-#define THIS_FIRMWARE_USE_UDP_ANNOUNCE
-
-/**
- * If defined a multicast heartbeat is broadcasted every minute.
- */
-#define THIS_FIRMWARE_USE_MULTICAST_ANNOUNCE
 
 /**
  * Firmware version

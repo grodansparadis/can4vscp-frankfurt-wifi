@@ -293,15 +293,6 @@ ENABLE_TESTING:BOOL=
 ESP_PLATFORM:UNINITIALIZED=1
 
 //Value Computed by CMake
-Frankfurt_eth_BINARY_DIR:STATIC=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build
-
-//Value Computed by CMake
-Frankfurt_eth_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-Frankfurt_eth_SOURCE_DIR:STATIC=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha
-
-//Value Computed by CMake
 Frankfurt_wifi_alpha_BINARY_DIR:STATIC=/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build
 
 //Value Computed by CMake
@@ -517,7 +508,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=88
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=89
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

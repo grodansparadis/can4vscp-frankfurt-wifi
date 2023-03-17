@@ -55,6 +55,10 @@ static EventGroupHandle_t s_wifi_event_group;
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT      BIT1
 
+///////////////////////////////////////////////////////////////////////////////
+// app_wifi_event_handler
+//
+
 static void app_wifi_event_handler(void *arg, esp_event_base_t event_base,
                                    int32_t event_id, void *event_data)
 {
@@ -68,6 +72,10 @@ static void app_wifi_event_handler(void *arg, esp_event_base_t event_base,
     }
 }
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_debug_recv_process
+//
 
 #ifdef CONFIG_APP_ESPNOW_DEBUG
 static esp_err_t app_espnow_debug_recv_process(uint8_t *src_addr, void *data,
@@ -94,6 +102,10 @@ static esp_err_t app_espnow_debug_recv_process(uint8_t *src_addr, void *data,
 }
 #endif
 
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_prov_responder_recv_cb
+//
+
 #ifdef CONFIG_APP_ESPNOW_PROVISION
 static esp_err_t app_espnow_prov_responder_recv_cb(uint8_t *src_addr, void *data,
         size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
@@ -114,6 +126,10 @@ static esp_err_t app_espnow_prov_responder_recv_cb(uint8_t *src_addr, void *data
 
     return ESP_OK;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_prov_beacon_start
+//
 
 esp_err_t app_espnow_prov_beacon_start(int32_t sec)
 {
@@ -143,6 +159,10 @@ esp_err_t app_espnow_prov_beacon_start(int32_t sec)
 
     return ret;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_prov_responder_task
+//
 
 static void app_espnow_prov_responder_task(void *arg)
 {
@@ -185,6 +205,10 @@ static void app_espnow_prov_responder_task(void *arg)
 #ifdef CONFIG_APP_ESPNOW_SECURITY
 const char *pop_data = CONFIG_APP_ESPNOW_SESSION_POP;
 static TaskHandle_t s_sec_task;
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_initiator_sec_task
+//
 
 static void app_espnow_initiator_sec_task(void *arg)
 {
@@ -234,6 +258,10 @@ EXIT:
 }
 #endif
 
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_initiator_register
+//
+
 void app_espnow_initiator_register()
 {
 #if defined(CONFIG_APP_ESPNOW_DEBUG) || defined(CONFIG_APP_ESPNOW_PROVISION)
@@ -243,6 +271,10 @@ void app_espnow_initiator_register()
     esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, app_wifi_event_handler, NULL);
 #endif
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_initiator
+//
 
 void app_espnow_initiator()
 {

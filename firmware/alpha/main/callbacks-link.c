@@ -50,9 +50,9 @@
 #include "vscp-compiler.h"
 #include "vscp-projdefs.h"
 
-#include "vscp-droplet.h"
+#include "vscp-espnow.h"
 #include "tcpsrv.h"
-#include "main.h"
+#include "alpha.h"
 
 #define TAG "linkcb"
 
@@ -392,10 +392,10 @@ vscp_link_callback_send(const void *pdata, vscpEvent *pev)
     pev->obid = pctx->id;
   }
 
-  if (ESP_OK != (ret = droplet_sendEvent(DROPLET_ADDR_BROADCAST, pev, NULL, 100))) {
-    ESP_LOGE(TAG, "Failed to send event. rv = %d", ret);
-    return VSCP_ERROR_ERROR;
-  }
+  // if (ESP_OK != (ret = droplet_sendEvent(DROPLET_ADDR_BROADCAST, pev, NULL, 100))) {
+  //   ESP_LOGE(TAG, "Failed to send event. rv = %d", ret);
+  //   return VSCP_ERROR_ERROR;
+  // }
 
   return VSCP_ERROR_SUCCESS;
 }

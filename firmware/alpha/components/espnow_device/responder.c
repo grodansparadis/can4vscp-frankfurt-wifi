@@ -44,6 +44,10 @@
 
 static const char *TAG = "resp";
 
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_event_handler
+//
+
 static void app_espnow_event_handler(void *handler_args, esp_event_base_t base, int32_t id, void *event_data)
 {
     if (base != ESP_EVENT_ESPNOW) {
@@ -75,6 +79,10 @@ static int s_retry_num = 0;
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT      BIT1
 
+///////////////////////////////////////////////////////////////////////////////
+// app_wifi_event_handler
+//
+
 static void app_wifi_event_handler(void *arg, esp_event_base_t event_base,
                                    int32_t event_id, void *event_data)
 {
@@ -97,6 +105,11 @@ static void app_wifi_event_handler(void *arg, esp_event_base_t event_base,
 #endif
 
 #if defined(CONFIG_APP_ESPNOW_DEBUG) && defined(CONFIG_APP_POST_LOG_TO_HTTP_SERVER)
+
+///////////////////////////////////////////////////////////////////////////////
+// app_log_read_task
+//
+
 /**
  * @brief http_client task creation
  *      You can modify the http address according to your needs,
@@ -172,6 +185,10 @@ static void app_log_read_task(void *arg)
 #ifdef CONFIG_APP_ESPNOW_PROVISION
 static TaskHandle_t s_prov_task;
 
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_prov_initiator_recv_cb
+//
+
 static esp_err_t app_espnow_prov_initiator_recv_cb(uint8_t *src_addr, void *data,
         size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
 {
@@ -190,6 +207,10 @@ static esp_err_t app_espnow_prov_initiator_recv_cb(uint8_t *src_addr, void *data
     ESP_ERROR_CHECK(esp_wifi_connect());
     return ESP_OK;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_prov_initiator_init
+//
 
 static void app_espnow_prov_initiator_init(void *arg)
 {
@@ -230,6 +251,10 @@ static void app_espnow_prov_initiator_init(void *arg)
     s_prov_task = NULL;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_prov_responder_start
+//
+
 esp_err_t app_espnow_prov_responder_start(void)
 {
     if (!s_prov_task) {
@@ -239,6 +264,10 @@ esp_err_t app_espnow_prov_responder_start(void)
     return ESP_OK;
 }
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_responder_register
+//
 
 void app_espnow_responder_register()
 {
@@ -251,6 +280,10 @@ void app_espnow_responder_register()
     esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, app_wifi_event_handler, NULL);
 #endif
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// app_espnow_responder_register
+//
 
 void app_espnow_responder()
 {

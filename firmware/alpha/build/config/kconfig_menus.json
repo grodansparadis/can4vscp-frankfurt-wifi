@@ -22393,118 +22393,6 @@
             {
                 "children": [
                     {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "\"Button scan interval\"",
-                        "id": "BUTTON_PERIOD_TIME_MS",
-                        "name": "BUTTON_PERIOD_TIME_MS",
-                        "range": [
-                            2,
-                            20
-                        ],
-                        "title": "BUTTON PERIOD TIME (MS)",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "\"One CONFIG_BUTTON_DEBOUNCE_TICKS equal to CONFIG_BUTTON_PERIOD_TIME_MS\"",
-                        "id": "BUTTON_DEBOUNCE_TICKS",
-                        "name": "BUTTON_DEBOUNCE_TICKS",
-                        "range": [
-                            1,
-                            8
-                        ],
-                        "title": "BUTTON DEBOUNCE TICKS",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": null,
-                        "id": "BUTTON_SHORT_PRESS_TIME_MS",
-                        "name": "BUTTON_SHORT_PRESS_TIME_MS",
-                        "range": [
-                            50,
-                            800
-                        ],
-                        "title": "BUTTON SHORT PRESS TIME (MS)",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": null,
-                        "id": "BUTTON_LONG_PRESS_TIME_MS",
-                        "name": "BUTTON_LONG_PRESS_TIME_MS",
-                        "range": [
-                            500,
-                            5000
-                        ],
-                        "title": "BUTTON LONG PRESS TIME (MS)",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "\"Serial trigger interval\"",
-                        "id": "BUTTON_SERIAL_TIME_MS",
-                        "name": "BUTTON_SERIAL_TIME_MS",
-                        "range": [
-                            2,
-                            1000
-                        ],
-                        "title": "BUTTON SERIAL TIME (MS)",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "\"Maximum number of channels for ADC buttons\"",
-                        "id": "ADC_BUTTON_MAX_CHANNEL",
-                        "name": "ADC_BUTTON_MAX_CHANNEL",
-                        "range": [
-                            1,
-                            5
-                        ],
-                        "title": "ADC BUTTON MAX CHANNEL",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "\"Maximum number of buttons per channel\"",
-                        "id": "ADC_BUTTON_MAX_BUTTON_PER_CHANNEL",
-                        "name": "ADC_BUTTON_MAX_BUTTON_PER_CHANNEL",
-                        "range": [
-                            1,
-                            10
-                        ],
-                        "title": "ADC BUTTON MAX BUTTON PER CHANNEL",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "\"Number of samples per scan\"",
-                        "id": "ADC_BUTTON_SAMPLE_TIMES",
-                        "name": "ADC_BUTTON_SAMPLE_TIMES",
-                        "range": [
-                            1,
-                            4
-                        ],
-                        "title": "ADC BUTTON SAMPLE TIMES",
-                        "type": "int"
-                    }
-                ],
-                "depends_on": null,
-                "id": "component-config-iot-button",
-                "title": "IoT Button",
-                "type": "menu"
-            },
-            {
-                "children": [
-                    {
                         "children": [
                             {
                                 "children": [],
@@ -22744,6 +22632,139 @@
                 "depends_on": null,
                 "id": "component-config-esp-now-configuration",
                 "title": "ESP-NOW Configuration",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "\"Button scan interval\"",
+                        "id": "BUTTON_PERIOD_TIME_MS",
+                        "name": "BUTTON_PERIOD_TIME_MS",
+                        "range": [
+                            2,
+                            20
+                        ],
+                        "title": "BUTTON PERIOD TIME (MS)",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "\"One CONFIG_BUTTON_DEBOUNCE_TICKS equal to CONFIG_BUTTON_PERIOD_TIME_MS\"",
+                        "id": "BUTTON_DEBOUNCE_TICKS",
+                        "name": "BUTTON_DEBOUNCE_TICKS",
+                        "range": [
+                            1,
+                            8
+                        ],
+                        "title": "BUTTON DEBOUNCE TICKS",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "BUTTON_SHORT_PRESS_TIME_MS",
+                        "name": "BUTTON_SHORT_PRESS_TIME_MS",
+                        "range": [
+                            50,
+                            800
+                        ],
+                        "title": "BUTTON SHORT PRESS TIME (MS)",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "BUTTON_LONG_PRESS_TIME_MS",
+                        "name": "BUTTON_LONG_PRESS_TIME_MS",
+                        "range": [
+                            500,
+                            5000
+                        ],
+                        "title": "BUTTON LONG PRESS TIME (MS)",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "\"Serial trigger interval\"",
+                        "id": "BUTTON_SERIAL_TIME_MS",
+                        "name": "BUTTON_SERIAL_TIME_MS",
+                        "range": [
+                            2,
+                            1000
+                        ],
+                        "title": "BUTTON SERIAL TIME (MS)",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "\"Maximum number of channels for ADC buttons\"",
+                        "id": "ADC_BUTTON_MAX_CHANNEL",
+                        "name": "ADC_BUTTON_MAX_CHANNEL",
+                        "range": [
+                            1,
+                            5
+                        ],
+                        "title": "ADC BUTTON MAX CHANNEL",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "\"Maximum number of buttons per channel\"",
+                        "id": "ADC_BUTTON_MAX_BUTTON_PER_CHANNEL",
+                        "name": "ADC_BUTTON_MAX_BUTTON_PER_CHANNEL",
+                        "range": [
+                            1,
+                            10
+                        ],
+                        "title": "ADC BUTTON MAX BUTTON PER CHANNEL",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "\"Number of samples per scan\"",
+                        "id": "ADC_BUTTON_SAMPLE_TIMES",
+                        "name": "ADC_BUTTON_SAMPLE_TIMES",
+                        "range": [
+                            1,
+                            4
+                        ],
+                        "title": "ADC BUTTON SAMPLE TIMES",
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-iot-button",
+                "title": "IoT Button",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "BRIGHTNESS_TICKS",
+                        "name": "BRIGHTNESS_TICKS",
+                        "range": [
+                            1,
+                            50
+                        ],
+                        "title": "One brightness change for ticks",
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-led-indicator",
+                "title": "LED Indicator",
                 "type": "menu"
             }
         ],

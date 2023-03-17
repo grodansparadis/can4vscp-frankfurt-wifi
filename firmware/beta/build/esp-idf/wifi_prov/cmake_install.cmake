@@ -1,4 +1,4 @@
-# Install script for directory: /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/components/wifi_prov
+# Install script for directory: /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/components/wifi_prov
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -39,9 +39,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/esp-idf/mbedtls/mbedtls/include/cmake_install.cmake")
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/esp-idf/mbedtls/mbedtls/3rdparty/cmake_install.cmake")
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/responder/build/esp-idf/mbedtls/mbedtls/library/cmake_install.cmake")
+  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/mbedtls/mbedtls/include/cmake_install.cmake")
+  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/mbedtls/mbedtls/3rdparty/cmake_install.cmake")
+  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/mbedtls/mbedtls/library/cmake_install.cmake")
 
 endif()
 

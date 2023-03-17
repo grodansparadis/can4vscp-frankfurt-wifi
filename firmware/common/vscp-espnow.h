@@ -151,20 +151,6 @@ typedef struct {
   uint32_t nForw;            // # Number of forwarded frames
 } vscp_espnow_stats_t;
 
-/**
- * @brief   Droplet type data receive callback function
- *
- * @param[in]  src_addr  peer MAC address
- * @param[in]  data  received data
- * @param[in]  size  length of received data
- * @param[in]  rx_ctrl  received packet radio metadata header
- *
- * @return
- *    - ESP_OK
- *    - ESP_ERR_INVALID_ARG
- */
-typedef esp_err_t (*type_handle_t)(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl);
-
 #define VSCP_ESPNOW_MSG_CACHE_SIZE           32    // Size for magic cache
 #define VSCP_ESPNOW_HEART_BEAT_INTERVAL      30000 // Milliseconds between heartbeat events
 #define VSCP_ESPNOW_INIT_LOOPS               2     // Number of all channel loops
@@ -202,42 +188,22 @@ typedef void (*vscp_espnow_attach_network_handler_cb_t)(wifi_pkt_rx_ctrl_t *prxd
 // ----------------------------------------------------------------------------
 
 /**
+ * @fn vscp_espnow_heartbeat_task 
+ * @brief Task that send VSCP heartbeat events every minute
+ * 
+ * @param pvParameter Pinter to data paremeter for task (not used)
+ */
+void
+vscp_espnow_heartbeat_task(void *pvParameter);
+
+/**
  * @brief Initialize VSCP esp-now
  *
- * @param config Pointer to VSCP esp-now configuration
+ * @param sizeQueue Size for input queue
  * @return esp_err_t
  */
 esp_err_t
-vscp_espnow_init(const vscp_espnow_config_t *config);
-
-/**
- * @brief Send vscp_espnow frame
- *
- * @param dest_addr Pointer to destination mac address. Normally broadcast 0xff,0xff,0xff,0xff,0xff,0xff
- * @param bPreserveHeader Set to true if header is already set in payload and need to be preserved. If false
- *                        ttl , magic etc will be set by the routine.
- * @param nEncrypt  Encryption type. Frame size will increase by 16 as the iv is appended to
- *                  the end of it. Valid values is
- *                  VSCP_ENCRYPTION_NONE           0
- *                  VSCP_ENCRYPTION_AES128         1
- *                  VSCP_ENCRYPTION_AES192         2
- *                  VSCP_ENCRYPTION_AES256         3
- * @param pkey Pointer to 32 bit key used for encryption.
- * @param ttl   Time to live for frame. Will be decrease by one for every hop.
- * @param payload The frame data.
- * @param size  The size of the payload.
- * @param wait_ms Milliseconds to wait for the frame to get sent.
- * @return esp_err_t ESP_OK is returned if all is OK
- */
-esp_err_t
-vscp_espnow_send(const uint8_t *dest_addr,
-             bool bPreserveHeader,
-             uint8_t nEncrypt,
-             const uint8_t *pkey,
-             uint8_t ttl,
-             uint8_t *data,
-             size_t size,
-             uint16_t wait_ms);
+vscp_espnow_init(size_t sizeQueue);
 
 /**
  * @brief Build full GUID from mac address
@@ -251,59 +217,31 @@ int
 vscp_espnow_build_guid_from_mac(uint8_t *pguid, const uint8_t *pmac, uint16_t nickname);
 
 /**
- * @brief Construct VSCP level I heartbeat frame
- *
- * @param buf Pointer to buffer that will get the frame data
- * @param len Size of the buffer. Must be at least VSCP_ESPNOW_PACKET_MIN_SIZE + 3
- * @param pguid Pointer to node GUID. Can be NULL in which case the node id will be set to zero.
- * @return int VSCP_ERROR_SUCCES is returned if all goes well. Otherwise VSCP error code is returned.
- *
- * The user defined first byte and zone/subzone is predefined in this call. Zone information is set to 0xff
- * for all zones/subzones and the user defined byte is set to zero.
- */
-
-int
-vscp_espnow_build_l1_heartbeat(uint8_t *buf, uint8_t len, const uint8_t *pguid);
-
-/**
- * @brief Construct VSCP level II heartbeat frame
- *
- * @param buf Pointer to buffer that will get the frame data
- * @param len Size of the buffer. Must be at least VSCP_ESPNOW_PACKET_MIN_SIZE + 3
- * @param pguid Pointer to node GUID. Can be NULL in which case the node id will be set to zero.
- * @param pname Pointer to node name or NULL in which case no name is set.
- * @return int VSCP_ERROR_SUCCES is returned if all goes well. Otherwise VSCP error code is returned.
- *
- */
-
-int
-vscp_espnow_build_l2_heartbeat(uint8_t *buf, uint8_t len, const uint8_t *pguid, const char *pname);
-
-/**
  * @fn vscp_espnow_sendEvent
  * @brief  Send event on vscp_espnow network
  *
- * @param destAddr Destination address.
+ * @param destAddr Destination address. Can be NULL in which case the event 
+ *  is sent to all hosts in table.
  * @param pev Event to send
  * @param wait_ms Time in milliseconds to wait for send
- * @return esp_err_t Error code. ESP_OK if all is OK.
+ * @return int Error code. VSCP_ERROR_SUCCESS if all is OK.
  */
 
-esp_err_t
-vscp_espnow_sendEvent(const uint8_t *destAddr, const vscpEvent *pev, const uint8_t *pkey, uint32_t wait_ms);
+int
+vscp_espnow_sendEvent(const uint8_t *destAddr, const vscpEvent *pev, uint32_t wait_ms);
 
 /**
  * @fn vscp_espnow_sendEventEx
  * @brief Send event ex on vscp_espnow network
  *
- * @param destAddr Destination address.
+ * @param destAddr Destination address. Can be NULL in which case the event 
+ *  is sent to all hosts in table.
  * @param pex Pointer to event ex to send.
- * @param pkey Pointer to 32 bit key used for encryption.
  * @param wait_ms Time in milliseconds to wait for send
- * @return esp_err_t Error code. ESP_OK if all is OK.
+ * @return int Error code. VSCP_ERROR_SUCCESS if all is OK.
  */
-esp_err_t
-vscp_espnow_sendEventEx(const uint8_t *destAddr, const vscpEventEx *pex, const uint8_t *pkey, uint32_t wait_ms);
+int
+vscp_espnow_sendEventEx(const uint8_t *destAddr, const vscpEventEx *pex, uint32_t wait_ms);
 
 /**
  * @fn vscp_espnow_getMinBufSizeEv
@@ -314,7 +252,7 @@ vscp_espnow_sendEventEx(const uint8_t *destAddr, const vscpEventEx *pex, const u
  * @return size_t Needed buffer size or zero for error (invalid event pointer).
  */
 size_t
-vscp_espnow_getMinBufSizeEv(vscpEvent *pev);
+vscp_espnow_getMinBufSizeEv(const vscpEvent *pev);
 
 /**
  * @fn vscp_espnow_getMinBufSizeEx
@@ -324,7 +262,7 @@ vscp_espnow_getMinBufSizeEv(vscpEvent *pev);
  * @return size_t Needed buffer size or zero for error (invalid event pointer).
  */
 size_t
-vscp_espnow_getMinBufSizeEx(vscpEventEx *pex);
+vscp_espnow_getMinBufSizeEx(const vscpEventEx *pex);
 
 /**
  * @brief Construct VSCP ESP-NOW frame form event structure
@@ -399,24 +337,6 @@ void
 vscp_espnow_clear_vscp_handler_cb(void);
 
 /**
- * @fn vscp_espnow_set_attach_network_handler_cb
- * @brief Set handler callback for network attach
- *
- * @param cb Callback that can do work when network attach occur.
- */
-
-void
-vscp_espnow_set_attach_network_handler_cb(vscp_espnow_attach_network_handler_cb_t cb);
-
-/**
- * @fn vscp_espnow_clear_attach_network_handler_cb
- * @brief Clear handler callback for network attach
- *
- */
-void
-vscp_espnow_clear_attach_network_handler_cb(void);
-
-/**
  * @fn vscp_espnow_parse_vscp_json
  * @brief Convert JSON string to VSCP event
  *
@@ -439,50 +359,6 @@ vscp_espnow_parse_vscp_json(vscpEvent *pev, const char *jsonVscpEventObj);
 int
 vscp_espnow_create_vscp_json(char *strObj, size_t len, vscpEvent *pev);
 
-void
-vscp_espnow_client_provisioning_task(void *pvParameter);
-
-/**
- * @fn vscp_espnow_isClientInit1Set
- * @brief Check if client init event 1 has been received
- *
- * @return EventBits_t
- */
-
-bool
-vscp_espnow_isClientInit1Set(void);
-
-/**
- * @fn vscp_espnow_isClientInit2Set
- * @brief Check if client init event 2 has been received
- *
- * @return EventBits_t
- */
-
-bool
-vscp_espnow_isClientInit2Set(void);
-
-/**
- * @fn vscp_espnow_startClientProvisioning
- * @brief Start client provisioning task
- *
- * @return int VSCP_ERROR_SUCCESSif OK error code on failure.
- */
-
-int
-vscp_espnow_startClientProvisioning(void);
-
-/**
- * @fn vscp_espnow_startServerProvisioning
- * @brief Start server provisioning task
- *
- * @param pmac Pointer to MAC address pf client node.
- * @param pkey Pointer to local key of client node.
- * @return int VSCP_ERROR_SUCCESSif OK error code on failure.
- */
-
-int
-vscp_espnow_startServerProvisioning(const uint8_t *pmac, const uint8_t *pkey);
 
 #ifdef __cplusplus
 }

@@ -399,7 +399,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/espressif__led_strip/cmake_install.cmake")
+  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/espressif__cmake_utilities/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/espressif__led_indicator/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)

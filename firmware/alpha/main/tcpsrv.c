@@ -60,7 +60,7 @@
 #include <string.h>
 #include <sys/param.h>
 
-#include "main.h"
+#include "alpha.h"
 #include <vscp.h>
 
 #include "tcpsrv.h"
@@ -70,9 +70,6 @@
                              // In idle time without receiving any data from peer, will send keep-alive probe packet
 #define KEEPALIVE_INTERVAL 5 // Keep-alive probe packet interval time.
 #define KEEPALIVE_COUNT    3 // Keep-alive probe packet retry count.
-
-// Global stuff
-extern transport_t g_tr_tcpsrv[MAX_TCP_CONNECTIONS];
 
 static const char *TAG    = "tcpsrv";
 static uint8_t cntClients = 0; // Holds current number of clients
@@ -87,6 +84,9 @@ static uint8_t cntClients = 0; // Holds current number of clients
 
 // Mutex that protect the droplet queue
 // SemaphoreHandle_t g_mutexQueueDroplet;
+
+// Buffers
+// static transport_t s_tr_tcpsrv[MAX_TCP_CONNECTIONS];
 
 /*!
   This is the socket context for open channels. It holds all
@@ -198,10 +198,14 @@ client_task(void *pvParameters)
 {
   int rv;
   size_t len;
+  fd_set readset;  // Socket read set
+  fd_set writeset; // Socket write set
+  fd_set errset;   // Socket error set
+  struct timeval tv;
   vscpctx_t *pctx = (vscpctx_t *) pvParameters;
 
   // Mark transport channel as open
-  g_tr_tcpsrv[pctx->id].open = true;
+  // g_tr_tcpsrv[pctx->id].open = true;
 
   ESP_LOGI(TAG, "Client worker socket=%d id=%d", pctx->sock, pctx->id);
 
@@ -213,90 +217,104 @@ client_task(void *pvParameters)
   cntClients++;
 
   do {
-    len = (rv = recv(pctx->sock, pctx->buf + pctx->size, (sizeof(pctx->buf) - pctx->size) - 1, MSG_DONTWAIT));
-    if ((rv < 0)) {
-      // If nothing to read do idle work
-      if (errno == EAGAIN) {
-        // Handle rcvloop etc
-        vscp_link_idle_worker(pctx);
-        continue;
-      }
-      ESP_LOGE(TAG, "Error occurred during receiving: rv=%d, errno=%d", rv, errno);
-      memset(pctx->buf, 0, sizeof(pctx->buf));
-      pctx->size = 0;
-      close(pctx->sock);
-      pctx->sock = 0;
-      break;
-    }
-    else if (rv == 0) {
-      close(pctx->sock);
-      pctx->sock = 0;
-      ESP_LOGW(TAG, "Connection closed");
-      break;
-    }
-    else {
+    FD_ZERO(&readset);
+    FD_SET(pctx->sock, &readset);
+    FD_ZERO(&writeset);
+    FD_SET(pctx->sock, &writeset);
+    FD_ZERO(&errset);
+    FD_SET(pctx->sock, &errset);
+    tv.tv_sec  = 1;
+    tv.tv_usec = 0;
+    int ret    = select(pctx->sock + 1, &readset, &writeset, &errset, &tv);
+    if (FD_ISSET(pctx->sock, &writeset)) {
 
-      pctx->size += len;
-      pctx->buf[pctx->size + 1] = 0;
-
-      // Parse VSCP command
-      char *pnext = NULL;
-      if (VSCP_ERROR_SUCCESS == vscp_link_parser(pctx, pctx->buf, &pnext)) {
-
-        if ((NULL != pnext) && *pnext) {
-          // printf("Copy [%s]\n", pnext);
-          strncpy(pctx->buf, pnext, sizeof(pctx->buf));
-          pctx->size = strlen(pctx->buf);
+      len = (rv = recv(pctx->sock, pctx->buf + pctx->size, (sizeof(pctx->buf) - pctx->size) - 1, 0 /*MSG_DONTWAIT*/));
+      if ((rv < 0)) {
+        // If nothing to read do idle work
+        if (errno == EAGAIN) {
+          // Handle rcvloop etc
+          vscp_link_idle_worker(pctx);
+          // vTaskDelay(1 / portTICK_PERIOD_MS);
+          continue;
         }
-        else {
-          memset(pctx->buf, 0, sizeof(pctx->buf));
-          pctx->size = 0;
-        }
-      }
-      else if (1 <= (sizeof(pctx->buf) - pctx->size)) {
-        // printf("Full buffer without crlf\n");
-        *pctx->buf = 0;
+        ESP_LOGE(TAG, "Error occurred during receiving: rv=%d, errno=%d", rv, errno);
+        memset(pctx->buf, 0, sizeof(pctx->buf));
         pctx->size = 0;
-      }
-
-      // printf("post len %d\n", pctx->size);
-
-      // If socket gets closed ("quit" command)
-      // pctx->sock is zero
-      if (!pctx->sock) {
+        close(pctx->sock);
+        pctx->sock = 0;
         break;
       }
+      else if (rv == 0) {
+        close(pctx->sock);
+        pctx->sock = 0;
+        ESP_LOGW(TAG, "Connection closed");
+        break;
+      }
+      else {
 
-      // Get event from out fifo to feed to
-      // protocol handler etc
-      // vscpEvent *pev = NULL;
-      // if (pdTRUE == xSemaphoreTake(pctx->mutexQueue, (TickType_t) 10/ portTICK_PERIOD_MS)) {
-      //   if (pdTRUE != xQueueReceive(pctx->queueClient, &pev, 0)) {
-      //     pev = NULL;
-      //   }
-      //   xSemaphoreGive(pctx->mutexQueue);
-      // }
-      // else {
-      //   ESP_LOGW(TAG, "Unable to get mutex for client queue for client %d", pctx->id);
-      // }
+        pctx->size += len;
+        pctx->buf[pctx->size + 1] = 0;
 
-      // pev is NULL if no event is available here
-      // The worker is still called.
-      // if pev != NULL the worker is responsible for
-      // freeing the event
+        // Parse VSCP command
+        char *pnext = NULL;
+        if (VSCP_ERROR_SUCCESS == vscp_link_parser(pctx, pctx->buf, &pnext)) {
 
-      // Do protocol work here
-      // if (NULL != pev) {
-      //  vscp2_do_work(pev);
-      //}
+          if ((NULL != pnext) && *pnext) {
+            // printf("Copy [%s]\n", pnext);
+            strncpy(pctx->buf, pnext, sizeof(pctx->buf));
+            pctx->size = strlen(pctx->buf);
+          }
+          else {
+            memset(pctx->buf, 0, sizeof(pctx->buf));
+            pctx->size = 0;
+          }
+        }
+        else if (1 <= (sizeof(pctx->buf) - pctx->size)) {
+          // printf("Full buffer without crlf\n");
+          *pctx->buf = 0;
+          pctx->size = 0;
+        }
 
-      // Handle rcvloop etc
-      vscp_link_idle_worker(pctx);
+        // printf("post len %d\n", pctx->size);
+
+        // If socket gets closed ("quit" command)
+        // pctx->sock is zero
+        if (!pctx->sock) {
+          break;
+        }
+
+        // Get event from out fifo to feed to
+        // protocol handler etc
+        // vscpEvent *pev = NULL;
+        // if (pdTRUE == xSemaphoreTake(pctx->mutexQueue, (TickType_t) 10/ portTICK_PERIOD_MS)) {
+        //   if (pdTRUE != xQueueReceive(pctx->queueClient, &pev, 0)) {
+        //     pev = NULL;
+        //   }
+        //   xSemaphoreGive(pctx->mutexQueue);
+        // }
+        // else {
+        //   ESP_LOGW(TAG, "Unable to get mutex for client queue for client %d", pctx->id);
+        // }
+
+        // pev is NULL if no event is available here
+        // The worker is still called.
+        // if pev != NULL the worker is responsible for
+        // freeing the event
+
+        // Do protocol work here
+        // if (NULL != pev) {
+        //  vscp2_do_work(pev);
+        //}
+
+        // Handle rcvloop etc
+        vscp_link_idle_worker(pctx);
+        // vTaskDelay(1 / portTICK_PERIOD_MS);
+      }
     }
   } while (pctx->sock);
 
   // Mark transport channel as closed
-  g_tr_tcpsrv[pctx->id].open = false;
+  // g_tr_tcpsrv[pctx->id].open = false;
 
   vscpEvent *pev;
   if (pdTRUE == xSemaphoreTake(pctx->mutexQueue, 5000 / portTICK_PERIOD_MS)) {
@@ -311,7 +329,7 @@ client_task(void *pvParameters)
   }
 
   // Empty the queue
-  xQueueReset(g_tr_tcpsrv[pctx->id].msg_queue);
+  // xQueueReset(g_tr_tcpsrv[pctx->id].msg_queue);
 
   ESP_LOGI(TAG, "Closing down tcp/ip client");
 
@@ -345,9 +363,10 @@ tcpsrv_task(void *pvParameters)
   struct sockaddr_storage dest_addr;
   vscpEvent *pev;
 
-  ESP_LOGI(TAG,"VSCP tcp/ip Link server started.");
+  ESP_LOGI(TAG, "VSCP tcp/ip Link server started.");
 
   for (int i = 0; i < MAX_TCP_CONNECTIONS; i++) {
+    // g_tr_tcpsrv[i].msg_queue = xQueueCreate(10, VSCP_ESPNOW_MAX_FRAME); // tcp/ip link channel i
     g_ctx[i].id         = i;
     g_ctx[i].sock       = 0;
     g_ctx[i].mutexQueue = xSemaphoreCreateMutex();
@@ -414,6 +433,8 @@ tcpsrv_task(void *pvParameters)
       break;
     }
 
+    ESP_LOGI(TAG, "Accepted");
+
     // Set tcp keepalive option
     setsockopt(sock, SOL_SOCKET, SO_KEEPALIVE, &keepAlive, sizeof(int));
     setsockopt(sock, IPPROTO_TCP, TCP_KEEPIDLE, &keepIdle, sizeof(int));
@@ -437,7 +458,7 @@ tcpsrv_task(void *pvParameters)
       continue;
     }
 
-    // Start tgask
+    // Start task
     for (int i = 0; i < MAX_TCP_CONNECTIONS; i++) {
       if (!g_ctx[i].sock) {
         g_ctx[i].sock = sock;

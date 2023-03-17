@@ -46,32 +46,6 @@
 
 #define DEV_BUFFER_LENGTH 64
 
-typedef enum {
-  CH_LINK = 0, // tcp/ip link protocol
-  CH_CAN,      // CAN
-  CH_WS,       // websocket I & II
-  CH_UDP,      // UDP
-  CH_MULTI,    // Multicast
-  CH_MQTT,     // MQTT
-  CH_BLE,      // BLE
-  CH_UART      // UART
-} dev_channel_t;
-
-// All transports use this structure for state
-
-typedef struct {
-  union {
-    struct {
-      uint32_t active : 1;    /**< Transport active if set to one */
-      uint32_t open : 1;      /**< Transport open if set to one */
-      uint32_t reserved : 30; /**< Reserved bits */
-    };
-    uint32_t flags; /**< Don't use */
-  };
-  QueueHandle_t msg_queue; /**< Message queue for transport */
-  uint32_t overruns;       /**< Queue overrun counter */
-
-} transport_t;
 
 /*!
   Default values stored in non volatile memory
@@ -87,21 +61,22 @@ typedef struct {
 typedef struct {
 
   // Module
-  bool bProvisioned;    // Node has got channel and pmk from alpha node if true
   char nodeName[32];    // User name for node
+  uint8_t pmk[16];      // Primary key
+  uint8_t nodeGuid[16]; // GUID for node (default: Constructed from MAC address)
+  uint32_t queueSize;   // espnow queue size
   uint8_t startDelay;   // Delay before wifi is enabled (to charge cap)
   uint32_t bootCnt;     // Number of restarts (not editable)
 
-  // Droplet
-  bool dropletLongRange;             // Enable long range mode
-  uint8_t dropletSizeQueue;          // Input queue size
-  uint8_t dropletChannel;            // Channel to use (zero is current)
-  uint8_t dropletTtl;                // Default ttl
-  bool dropletForwardEnable;         // Forward when packets are received
-  uint8_t dropletEncryption;         // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
-  bool dropletFilterAdjacentChannel; // Don't receive if from other channel
-  bool dropletForwardSwitchChannel;  // Allow switching channel on forward
-  int8_t dropletFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
+  // espnow
+  bool enLongRange;             // Enable long range mode
+  uint8_t enSizeQueue;          // Input queue size
+  uint8_t enChannel;           // Channel to use (zero is current)
+  uint8_t enTtl;                // Default ttl
+  bool enForwardEnable;         // Forward when packets are received
+  bool enFilterAdjacentChannel; // Don't receive if from other channel
+  bool enForwardSwitchChannel;  // Allow switching channel on forward
+  int8_t enFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
 } node_persistent_config_t;
 
 // ----------------------------------------------------------------------------

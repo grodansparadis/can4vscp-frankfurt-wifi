@@ -8,8 +8,20 @@
 #define _VSCP_PROJDEFS_H_
 
 // Define one of
-#define VSCP_PROJDEF_LED_STRIP
-//#define VSCP_PROJDEF_LED
+//#define VSCP_PROJDEF_LED_STRIP
+#define VSCP_PROJDEF_LED_SIMPLE
+
+#define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCP-DROPLET"
+
+/*!
+  Name of device for level II capabilities announcement event.
+*/
+#define VSCP_PROJDEF_DEVICE_NAME "Frankfurt wifi alpha"
+
+/*!
+  Number of buttons
+*/
+#define VSCP_PROJDEF_BUTTON_CNT     1
 
 // ----------------------------------------------------------------------------
 //                        VSCP helper lib defines
@@ -21,7 +33,7 @@
 // ----------------------------------------------------------------------------
 
 // Node type for this node
-#define PRJDEF_NODE_TYPE VSCP_DROPLET_BETA
+#define PRJDEF_NODE_TYPE VSCP_DROPLET_ALPHA
 
 // 16-bit nickname for node
 #define PRJDEF_NODE_NICKNAME 0
@@ -30,7 +42,8 @@
 #define PRJDEF_INIT_BUTTON_PIN 0
 
 // GPIO number for indicator LED
-#define PRJDEF_INDICATOR_LED_PIN 2
+#define PRJDEF_INDICATOR_LED_PIN_GREEN  2
+#define PRJDEF_INDICATOR_LED_PIN_RED    3
 
 // OTA mode
 // ESPNOW_OTA_INITATOR or ESPNOW_OTA_RESPONDEDER
@@ -115,6 +128,11 @@
 // When enable long range, the PHY rate of ESP32 will be 512Kbps or 256Kbps
 #define PRJDEF_ESPNOW_ENABLE_LONG_RANGE false
 
+// Default login credentials
+#define PRJDEF_DEFAULT_TCPIP_USER       "vscp"
+#define PRJDEF_DEFAULT_TCPIP_PASSWORD   "secret"
+
+
 /**
   ----------------------------------------------------------------------------
                               Access Point
@@ -178,10 +196,7 @@
  */
 #define PRJDEF_VSCP_LINK_ENABLE_RCVLOOP_CMD (1)
 
-/*!
-  Name of device for level II capabilities announcement event.
-*/
-#define THIS_FIRMWARE_DEVICE_NAME "VSCP Wireless CAN Gateway"
+
 
 /**
  * If defined an UDP heartbeat is broadcasted every minute.

@@ -46,33 +46,6 @@
 
 #define DEV_BUFFER_LENGTH 64
 
-typedef enum {
-  CH_LINK = 0, // tcp/ip link protocol
-  CH_CAN,      // CAN
-  CH_WS,       // websocket I & II
-  CH_UDP,      // UDP
-  CH_MULTI,    // Multicast
-  CH_MQTT,     // MQTT
-  CH_BLE,      // BLE
-  CH_UART      // UART
-} dev_channel_t;
-
-// All transports use this structure for state
-
-typedef struct {
-  union {
-    struct {
-      uint32_t active : 1;    /**< Transport active if set to one */
-      uint32_t open : 1;      /**< Transport open if set to one */
-      uint32_t reserved : 30; /**< Reserved bits */
-    };
-    uint32_t flags; /**< Don't use */
-  };
-  QueueHandle_t msg_queue; /**< Message queue for transport */
-  uint32_t overruns;       /**< Queue overrun counter */
-
-} transport_t;
-
 /*!
   Default values stored in non volatile memory
   on start up.
@@ -82,26 +55,79 @@ typedef struct {
 
 // ----------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------
 
+typedef enum {
+  ALPHA_LOG_NONE, /*!< No log output */
+  ALPHA_LOG_STD,  /*!< Standard output */
+  ALPHA_LOG_UDP,  /*!< UDP */
+  ALPHA_LOG_TCP,  /*!< TCP */
+  ALPHA_LOG_HTTP, /*!< HTTP */
+  ALPHA_LOG_MQTT, /*!< MQTT */
+  ALPHA_LOG_VSCP  /*!< VSCP */
+} alpha_log_output_t;
 
 typedef struct {
 
   // Module
-  bool bProvisioned;    // Node has got channel and pmk from alpha node if true
-  char nodeName[32];    // User name for node
+  char nodeName[32];    // Friendly name for node
+  uint8_t pmk[16];      // Primary key
+  uint8_t nodeGuid[16]; // GUID for node (default: Constructed from MAC address)
+  uint32_t queueSize;   // espnow queue size
   uint8_t startDelay;   // Delay before wifi is enabled (to charge cap)
   uint32_t bootCnt;     // Number of restarts (not editable)
 
+  // Logging
+  uint8_t logwrite2Stdout; // Enable write Logging to STDOUT
+  uint8_t logLevel;        // 'ERROR' is default
+  uint8_t logType;         // STDOUT / UDP / TCP / HTTP / MQTT /VSCP
+  uint8_t logRetries;      // Number of log log retries
+  char logUrl[32];         // For UDP/TCP/HTML
+  uint16_t logPort;        // Port for UDP
+  char logMqttTopic[64];   //  MQTT topic
+
+  // VSCP Link
+  bool vscplinkEnable;
+  char vscplinkUrl[32];      // URL VSCP tcp/ip Link host (set to blank yto disable)
+  uint16_t vscplinkPort;     // Port on VSCP tcp/ip Link host
+  char vscplinkUsername[32]; // Username for VSCP tcp/ip Link host
+  char vscplinkPassword[32]; // Password for VSCP tcp/ip Link host
+  uint8_t vscpLinkKey[32];   // Security key (16 (EAS128)/24(AES192)/32(AES256))
+
   // Droplet
+  bool dropletEnable;
   bool dropletLongRange;             // Enable long range mode
   uint8_t dropletSizeQueue;          // Input queue size
-  uint8_t dropletChannel;            // Channel to use (zero is current)
+  uint8_t dropletChannel;           // Channel to use (zero is current)
   uint8_t dropletTtl;                // Default ttl
   bool dropletForwardEnable;         // Forward when packets are received
   uint8_t dropletEncryption;         // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
   bool dropletFilterAdjacentChannel; // Don't receive if from other channel
   bool dropletForwardSwitchChannel;  // Allow switching channel on forward
   int8_t dropletFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
+
+  // Web server
+  bool webEnable;
+  uint16_t webPort;     // Port web server listens on
+  char webUsername[32]; // Basic Auth username
+  char webPassword[32]; // Basic Auth password
+
+  // MQTT  (mqtt[s]://[username][:password]@host.domain[:port])
+  bool mqttEnable;
+  char mqttUrl[32];
+  uint16_t mqttPort;
+  char mqttClientid[64];
+  char mqttUsername[32];
+  char mqttPassword[32];
+  int mqttQos;
+  int mqttRetain;
+  char mqttSub[128];
+  char mqttPub[128];
+  char mqttVerification[32*1024];   // For server certificate
+  char mqttLwTopic[128];
+  char mqttLwMessage[128];
+  uint8_t mqttLwQos;
+  bool mqttLwRetain;
 } node_persistent_config_t;
 
 // ----------------------------------------------------------------------------
