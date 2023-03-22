@@ -75,11 +75,14 @@ typedef struct {
 typedef enum {
     BLINK_FACTORY_RESET,           /**< restoring factory settings */
     BLINK_UPDATING,                /**< updating software */ 
-    BLINK_CONNECTED,               /**< connected to AP (or Cloud) succeeded */
-    BLINK_PROVISIONED,             /**< provision done */ 
+    BLINK_CONNECTED,               /**< connected to AP (or Cloud) succeeded */    
     BLINK_CONNECTING,              /**< connecting to AP (or Cloud) */
     BLINK_RECONNECTING,            /**< reconnecting to AP (or Cloud), if lose connection */ 
+    BLINK_WAIT4IP,                 /**< Waiting for IP address */
     BLINK_PROVISIONING,            /**< provisioning */ 
+    BLINK_PROVISIONED,             /**< provision done */ 
+    BLINK_SECURITY,                /**< provision done */ 
+    BLINK_CONNECT_FAILURE,         /**< CONNECTION failure */ 
     BLINK_MAX,                     /**< INVALID type */ 
 } led_indicator_blink_type_t;
 

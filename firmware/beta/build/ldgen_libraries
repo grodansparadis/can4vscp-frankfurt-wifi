@@ -65,4 +65,3 @@
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espressif__led_strip/libespressif__led_strip.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espressif__qrcode/libespressif__qrcode.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/main/libmain.a
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/libespnow_device.a

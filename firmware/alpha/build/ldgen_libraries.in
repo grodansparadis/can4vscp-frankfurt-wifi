@@ -64,5 +64,4 @@ $<TARGET_FILE:__idf_espressif__esp-now>
 $<TARGET_FILE:__idf_espressif__led_indicator>
 $<TARGET_FILE:__idf_espressif__qrcode>
 $<TARGET_FILE:__idf_main>
-$<TARGET_FILE:__idf_espnow_device>
 $<TARGET_FILE:__idf_wifi_prov>

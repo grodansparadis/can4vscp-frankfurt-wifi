@@ -54,6 +54,23 @@ static const blink_step_t connecting[] = {
   { LED_BLINK_LOOP, 0, 0 },
 };
 
+
+/**
+ * @brief Waiting for IP-address
+ *
+ */
+static const blink_step_t wait4ip[] = {
+  { LED_BLINK_HOLD, LED_STATE_ON, 100 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 200 },
+  { LED_BLINK_HOLD, LED_STATE_ON, 100 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 200 },
+  { LED_BLINK_HOLD, LED_STATE_ON, 100 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 200 },
+  { LED_BLINK_HOLD, LED_STATE_ON, 100 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 1800 },
+  { LED_BLINK_LOOP, 0, 0 },
+};
+
 /**
  * @brief connected to AP (or Cloud) succeed
  *
@@ -115,17 +132,42 @@ static const blink_step_t provisioned[] = {
 };
 
 /**
+ * @brief security - key exchange
+ *
+ */
+static const blink_step_t security[] = {
+  { LED_BLINK_HOLD, LED_STATE_ON, 10 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 10 },
+  { LED_BLINK_HOLD, LED_STATE_ON, 10 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 10 },
+  { LED_BLINK_STOP, 0, 0 },
+};
+
+/**
+ * @brief security - key exchange
+ *
+ */
+static const blink_step_t failure[] = {
+  { LED_BLINK_HOLD, LED_STATE_ON, 500 },
+  { LED_BLINK_HOLD, LED_STATE_OFF, 500 },
+  { LED_BLINK_STOP, 0, 0 },
+};
+
+/**
  * @brief led indicator blink lists, the index like BLINK_FACTORY_RESET defined the priority of the blink
  */
 // clang-format off
 blink_step_t const *led_indicator_blink_lists[] = {
   [BLINK_FACTORY_RESET] = factory_reset, 
   [BLINK_UPDATING] = updating,
-  [BLINK_CONNECTED] = connected,         
-  [BLINK_PROVISIONED] = provisioned,
-  [BLINK_RECONNECTING] = reconnecting,   
+  [BLINK_CONNECTED] = connected,           
   [BLINK_CONNECTING] = connecting,
+  [BLINK_RECONNECTING] = reconnecting,   
+  [BLINK_WAIT4IP] = wait4ip,
   [BLINK_PROVISIONING] = provisioning,   
+  [BLINK_PROVISIONED] = provisioned,
+  [BLINK_SECURITY] = security,
+  [BLINK_CONNECT_FAILURE] = failure,
   [BLINK_MAX] = NULL,
 };
 // clang-format on

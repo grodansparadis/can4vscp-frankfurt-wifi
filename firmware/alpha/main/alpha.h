@@ -94,17 +94,17 @@ typedef struct {
   char vscplinkPassword[32]; // Password for VSCP tcp/ip Link host
   uint8_t vscpLinkKey[32];   // Security key (16 (EAS128)/24(AES192)/32(AES256))
 
-  // Droplet
-  bool dropletEnable;
-  bool dropletLongRange;             // Enable long range mode
-  uint8_t dropletSizeQueue;          // Input queue size
-  uint8_t dropletChannel;           // Channel to use (zero is current)
-  uint8_t dropletTtl;                // Default ttl
-  bool dropletForwardEnable;         // Forward when packets are received
-  uint8_t dropletEncryption;         // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
-  bool dropletFilterAdjacentChannel; // Don't receive if from other channel
-  bool dropletForwardSwitchChannel;  // Allow switching channel on forward
-  int8_t dropletFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
+  // ESP-NOW
+  bool espnowEnable;
+  bool espnowLongRange;             // Enable long range mode
+  uint8_t espnowSizeQueue;          // Input queue size
+  uint8_t espnowChannel;           // Channel to use (zero is current)
+  uint8_t espnowTtl;                // Default ttl
+  bool espnowForwardEnable;         // Forward when packets are received
+  uint8_t espnowEncryption;         // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
+  bool espnowFilterAdjacentChannel; // Don't receive if from other channel
+  bool espnowForwardSwitchChannel;  // Allow switching channel on forward
+  int8_t espnowFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
 
   // Web server
   bool webEnable;
@@ -130,6 +130,7 @@ typedef struct {
   bool mqttLwRetain;
 } node_persistent_config_t;
 
+
 // ----------------------------------------------------------------------------
 
 /*!
@@ -153,40 +154,40 @@ typedef struct {
 ESP_EVENT_DECLARE_BASE(ALPHA_EVENT); // declaration of the alpha events family
 
 /*!
-  Beta events
+  Alpha events
 */
 typedef enum {
   /**
    * Start client provisioning and security transfer.
    * This state is active for 30 seconds.
    */
-  BETA_START_CLIENT_PROVISIONING,
+  ALPHA_START_CLIENT_PROVISIONING,
 
   /**
    * Stop client provisioning and security transfer.
    * This event happens 30 seconds after start
    */
-  BETA_STOP_CLIENT_PROVISIONING,
+  ALPHA_STOP_CLIENT_PROVISIONING,
 
   /**
    * Restart system
    */
-  BETA_RESTART,
+  ALPHA_RESTART,
 
   /**
    * Restore factory default and erase wifi credentials
    */
-  BETA_RESTORE_FACTORY_DEFAULTS,
+  ALPHA_RESTORE_FACTORY_DEFAULTS,
 
   /**
    * Node is waiting to get IP address
    */
-  BETA_GET_IP_ADDRESS_START,
+  ALPHA_GET_IP_ADDRESS_START,
 
   /**
    * Node have received IP address
    */
-  BETA_GET_IP_ADDRESS_STOP,
+  ALPHA_GET_IP_ADDRESS_STOP,
 } beta_cb_event_t;
 
 // ----------------------------------------------------------------------------
@@ -210,12 +211,25 @@ uint32_t
 getMilliSeconds(void);
 
 /**
- * @brief receive callback
+ * @brief VSCP event over esp-now receive callback
  *
  * @param pev Pointer to received event.
  * @param userdata Pointer to user data.
  */
 void
 receive_cb(const vscpEvent *pev, void *userdata);
+
+/**
+ * @brief Start security initiator
+ * 
+ * @return esp_err_t 
+ * 
+ * Key exchange is started here. If a 32 byte key+iv is not
+ * already set and is configured it is generated here.
+ * Scanning is done for nodes that are set into key exchange mode
+ * and then handshaking is done with each node to transfer the key + iv
+ */
+esp_err_t
+app_sec_initiator(void);
 
 #endif

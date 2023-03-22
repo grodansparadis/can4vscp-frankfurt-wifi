@@ -4,8 +4,9 @@
             "name": "Linux",
             "includePath": [
               "${workspaceFolder}/**",
+              "./components/**",
               "${IDF_PATH}/**",
-              "${ESPNOW_PATH}/**",
+              "managed_components/**",
               "${VSCP_COMMON}/**"
             ],
             "defines": [],

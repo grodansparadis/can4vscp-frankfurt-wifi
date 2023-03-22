@@ -1,5 +1,5 @@
 /*
-  VSCP Alpha Droplet node
+  VSCP Alpha espnow node
 
   Web Server
 
@@ -262,9 +262,9 @@ http_auth_basic(const char *username, const char *password)
 // %c5    - MQTT Subscribe (multiple)
 // %c6    - MQTT Publish (multiple)
 //
-// DROPLET
+// espnow
 // =======
-// %d0    - Droplet master key (32 + zero termination)
+// %d0    - espnow master key (32 + zero termination)
 // %d1    - Time to live (0-255)
 // %d2    - Packet forward enable("true")/disable("false")
 // %d3    - Long range ("true"/"false").
@@ -338,7 +338,7 @@ info_get_handler(httpd_req_t *req)
   esp_chip_info_t chip_info;
   esp_chip_info(&chip_info);
 
-  // printf("Firmware version: %d\n", DROPLET_VERSION);
+  // printf("Firmware version: %d\n", espnow_VERSION);
   const esp_app_desc_t *appDescr = esp_app_get_description();
 
   sprintf(buf, WEBPAGE_START_TEMPLATE, g_persistent.nodeName, "Technical Info");
@@ -827,7 +827,7 @@ upgrade_get_handler(httpd_req_t *req)
   esp_chip_info_t chip_info;
   esp_chip_info(&chip_info);
 
-  // printf("Firmware version: %d\n", DROPLET_VERSION);
+  // printf("Firmware version: %d\n", espnow_VERSION);
   const esp_app_desc_t *appDescr = esp_app_get_description();
 
   sprintf(buf, WEBPAGE_START_TEMPLATE, g_persistent.nodeName, "Upgrade firmware");
@@ -1008,7 +1008,7 @@ static const httpd_uri_t upgrdlocal = { .uri      = "/upgrdlocal",
 //   const char *resp_str =
 //     "<html><head><meta charset='utf-8'><meta name=\"viewport\" "
 //     "content=\"width=device-width,initial-scale=1,user-scalable=no\" /><link rel=\"icon\" "
-//     "href=\"favicon-32x32.png\"><title>Droplet Alpha node - Update</title><link rel=\"stylesheet\" href=\"style.css\"
+//     "href=\"favicon-32x32.png\"><title>espnow Alpha node - Update</title><link rel=\"stylesheet\" href=\"style.css\"
 //     "
 //     "/><meta http-equiv=\"refresh\" content=\"5;url=index.html\" /></head><body><div "
 //     "style='text-align:left;display:inline-block;color:#eaeaea;min-width:340px;'><div "
@@ -1200,7 +1200,7 @@ doprov_get_handler(httpd_req_t *req)
   }
 
   // Start the provisioning of the client node
-  // droplet_startServerProvisioning(pmac, pkey);
+  // espnow_startServerProvisioning(pmac, pkey);
 
   // Parameters not needed anymore
   VSCP_FREE(pmac);
@@ -1222,7 +1222,7 @@ doprov_get_handler(httpd_req_t *req)
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 
-  // uxBits = xEventGroupWaitBits(s_droplet_event_group, DROPLET_PROV_CLIENT1_BIT, pdTRUE, pdTRUE, 1000 /
+  // uxBits = xEventGroupWaitBits(s_espnow_event_group, espnow_PROV_CLIENT1_BIT, pdTRUE, pdTRUE, 1000 /
   // portTICK_PERIOD_MS);
 
   sprintf(buf, WEBPAGE_END_TEMPLATE, appDescr->version, g_persistent.nodeName);
@@ -1475,7 +1475,7 @@ config_get_handler(httpd_req_t *req)
   sprintf(buf, "<p><form id=but2 class=\"button\" action='cfgwifi' method='get'><button>WiFi</button></form></p>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
-          "<p><form id=but3 class=\"button\" action='cfgdroplet' method='get'><button>Droplet</button></form></p>");
+          "<p><form id=but3 class=\"button\" action='cfgespnow' method='get'><button>espnow</button></form></p>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "<p><form id=but3 class=\"button\" action='cfgvscplink' method='get'><button>VSCP Link</button></form></p>");
@@ -1563,7 +1563,7 @@ config_module_get_handler(httpd_req_t *req)
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   char *pmkstr = VSCP_MALLOC(65);
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < sizeof(g_persistent.pmk); i++) {
     sprintf(pmkstr + 2 * i, "%02X", g_persistent.pmk[i]);
   }
   sprintf(buf,
@@ -1997,11 +1997,11 @@ do_config_wifi_get_handler(httpd_req_t *req)
 // ----------------------------------------------------------------------------
 
 ///////////////////////////////////////////////////////////////////////////////
-// config_droplet_get_handler
+// config_espnow_get_handler
 //
 
 static esp_err_t
-config_droplet_get_handler(httpd_req_t *req)
+config_espnow_get_handler(httpd_req_t *req)
 {
   // esp_err_t rv;
   char *buf;
@@ -2033,19 +2033,19 @@ config_droplet_get_handler(httpd_req_t *req)
   sprintf(buf, WEBPAGE_START_TEMPLATE, g_persistent.nodeName, "ESPNOW Configuration");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  sprintf(buf, "<div><form id=but3 class=\"button\" action='/docfgdroplet' method='get'><fieldset>");
+  sprintf(buf, "<div><form id=but3 class=\"button\" action='/docfgespnow' method='get'><fieldset>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   // Enable
   sprintf(buf, "<input type=\"checkbox\" name=\"enable\" value=\"true\" ");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
-  sprintf(buf, "%s><label for=\"lr\"> Enable</label>", g_persistent.dropletEnable ? "checked" : "");
+  sprintf(buf, "%s><label for=\"lr\"> Enable</label>", g_persistent.espnowEnable ? "checked" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   // Long range
   sprintf(buf, "<br><input type=\"checkbox\" name=\"lr\" value=\"true\" ");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
-  sprintf(buf, "%s><label for=\"lr\"> Enable Long Range</label>", g_persistent.dropletLongRange ? "checked" : "");
+  sprintf(buf, "%s><label for=\"lr\"> Enable Long Range</label>", g_persistent.espnowLongRange ? "checked" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   // Forward
@@ -2053,7 +2053,7 @@ config_droplet_get_handler(httpd_req_t *req)
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "%s><label for=\"fw\"> Enable Frame Forward</label>",
-          g_persistent.dropletForwardEnable ? "checked" : "");
+          g_persistent.espnowForwardEnable ? "checked" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   // Filter Adj Channel
@@ -2061,7 +2061,7 @@ config_droplet_get_handler(httpd_req_t *req)
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "%s><label for=\"adjf\"> Filter Adj. Channel</label>",
-          g_persistent.dropletFilterAdjacentChannel ? "checked" : "");
+          g_persistent.espnowFilterAdjacentChannel ? "checked" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   // Forward switch channel
@@ -2069,7 +2069,7 @@ config_droplet_get_handler(httpd_req_t *req)
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "%s><label for=\"swchf\"> Forward Switch Channel</label>",
-          g_persistent.dropletForwardSwitchChannel ? "checked" : "");
+          g_persistent.espnowForwardSwitchChannel ? "checked" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
 /*
@@ -2078,38 +2078,38 @@ config_droplet_get_handler(httpd_req_t *req)
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "<option value=\"0\" %s>None</option>",
-          (VSCP_ENCRYPTION_NONE == g_persistent.dropletEncryption) ? "selected" : "");
+          (VSCP_ENCRYPTION_NONE == g_persistent.espnowEncryption) ? "selected" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "<option value=\"1\" %s>AES-128</option>",
-          (VSCP_ENCRYPTION_AES128 == g_persistent.dropletEncryption) ? "selected" : "");
+          (VSCP_ENCRYPTION_AES128 == g_persistent.espnowEncryption) ? "selected" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "<option value=\"2\" %s>AES-192</option>",
-          (VSCP_ENCRYPTION_AES192 == g_persistent.dropletEncryption) ? "selected" : "");
+          (VSCP_ENCRYPTION_AES192 == g_persistent.espnowEncryption) ? "selected" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf,
           "<option value=\"3\" %s>AES-256</option>",
-          (VSCP_ENCRYPTION_AES256 == g_persistent.dropletEncryption) ? "selected" : "");
+          (VSCP_ENCRYPTION_AES256 == g_persistent.espnowEncryption) ? "selected" : "");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
   sprintf(buf, "</select>");
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 */
 
-  sprintf(buf, "<br>Queue size (32):<input type=\"text\" name=\"qsize\" value=\"%d\" >", g_persistent.dropletSizeQueue);
+  sprintf(buf, "<br>Queue size (32):<input type=\"text\" name=\"qsize\" value=\"%d\" >", g_persistent.espnowSizeQueue);
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf,
           "<br>Use channel (0 is current):<input type=\"text\" name=\"channel\" value=\"%d\" >",
-          g_persistent.dropletChannel);
+          g_persistent.espnowChannel);
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
-  sprintf(buf, "<br>Time to live (32):<input type=\"text\" name=\"ttl\" value=\"%d\" >", g_persistent.dropletTtl);
+  sprintf(buf, "<br>Time to live (32):<input type=\"text\" name=\"ttl\" value=\"%d\" >", g_persistent.espnowTtl);
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf,
           "<br>Filter on RSSI (-67):<input type=\"text\" name=\"rssi\" value=\"%d\" >",
-          g_persistent.dropletFilterWeakSignal);
+          g_persistent.espnowFilterWeakSignal);
   httpd_resp_send_chunk(req, buf, HTTPD_RESP_USE_STRLEN);
 
   sprintf(buf, "<button class=\"bgrn bgrn:hover\">Save</button></fieldset></form></div><br>");
@@ -2126,11 +2126,11 @@ config_droplet_get_handler(httpd_req_t *req)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// do_config_droplet_get_handler
+// do_config_espnow_get_handler
 //
 
 static esp_err_t
-do_config_droplet_get_handler(httpd_req_t *req)
+do_config_espnow_get_handler(httpd_req_t *req)
 {
   esp_err_t rv;
   char *buf;
@@ -2154,168 +2154,168 @@ do_config_droplet_get_handler(httpd_req_t *req)
       if (ESP_OK == (rv = httpd_query_key_value(buf, "enable", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => enable=%s", param);
         if (NULL != strstr(param, "true")) {
-          g_persistent.dropletEnable = true;
+          g_persistent.espnowEnable = true;
         }
       }
       else {
-        g_persistent.dropletEnable = false;
+        g_persistent.espnowEnable = false;
       }
 
       // Write changed value to persistent storage
-      rv = nvs_set_u8(g_nvsHandle, "drop_enable", g_persistent.dropletEnable);
+      rv = nvs_set_u8(g_nvsHandle, "drop_enable", g_persistent.espnowEnable);
       if (rv != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to update droplet enable");
+        ESP_LOGE(TAG, "Failed to update espnow enable");
       }
 
       // Long range
       if (ESP_OK == (rv = httpd_query_key_value(buf, "lr", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => lr=%s", param);
         if (NULL != strstr(param, "true")) {
-          g_persistent.dropletLongRange = true;
+          g_persistent.espnowLongRange = true;
         }
       }
       else {
-        g_persistent.dropletLongRange = false;
+        g_persistent.espnowLongRange = false;
       }
 
       // Write changed value to persistent storage
-      rv = nvs_set_u8(g_nvsHandle, "drop_lr", g_persistent.dropletLongRange);
+      rv = nvs_set_u8(g_nvsHandle, "drop_lr", g_persistent.espnowLongRange);
       if (rv != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to update droplet long range");
+        ESP_LOGE(TAG, "Failed to update espnow long range");
       }
 
       // Forward
       if (ESP_OK == (rv = httpd_query_key_value(buf, "fw", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => fw=%s", param);
         if (NULL != strstr(param, "true")) {
-          g_persistent.dropletForwardEnable = true;
+          g_persistent.espnowForwardEnable = true;
         }
         else {
-          g_persistent.dropletForwardEnable = false;
+          g_persistent.espnowForwardEnable = false;
         }
       }
       else {
-        g_persistent.dropletForwardEnable = false;
+        g_persistent.espnowForwardEnable = false;
       }
 
       // Write changed value to persistent storage
-      rv = nvs_set_u8(g_nvsHandle, "drop_fw", g_persistent.dropletForwardEnable);
+      rv = nvs_set_u8(g_nvsHandle, "drop_fw", g_persistent.espnowForwardEnable);
       if (rv != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to update droplet forward");
+        ESP_LOGE(TAG, "Failed to update espnow forward");
       }
 
       // Filter Adj. Channel
       if (ESP_OK == (rv = httpd_query_key_value(buf, "adjf", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => adjf=%s", param);
         if (NULL != strstr(param, "true")) {
-          g_persistent.dropletFilterAdjacentChannel = true;
+          g_persistent.espnowFilterAdjacentChannel = true;
         }
         else {
-          g_persistent.dropletFilterAdjacentChannel = false;
+          g_persistent.espnowFilterAdjacentChannel = false;
         }
       }
       else {
-        g_persistent.dropletFilterAdjacentChannel = false;
+        g_persistent.espnowFilterAdjacentChannel = false;
       }
 
       // Write changed value to persistent storage
-      rv = nvs_set_u8(g_nvsHandle, "drop_filt", g_persistent.dropletFilterAdjacentChannel);
+      rv = nvs_set_u8(g_nvsHandle, "drop_filt", g_persistent.espnowFilterAdjacentChannel);
       if (rv != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to update droplet adj. freq. filter");
+        ESP_LOGE(TAG, "Failed to update espnow adj. freq. filter");
       }
 
       // Allow switching channel on forward
       if (ESP_OK == (rv = httpd_query_key_value(buf, "swchf", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => swchf=%s", param);
         if (NULL != strstr(param, "true")) {
-          g_persistent.dropletForwardSwitchChannel = true;
+          g_persistent.espnowForwardSwitchChannel = true;
         }
         else {
-          g_persistent.dropletForwardSwitchChannel = false;
+          g_persistent.espnowForwardSwitchChannel = false;
         }
       }
       else {
-        g_persistent.dropletForwardSwitchChannel = false;
+        g_persistent.espnowForwardSwitchChannel = false;
       }
 
       // Write changed value to persistent storage
-      rv = nvs_set_u8(g_nvsHandle, "drop_swchf", g_persistent.dropletForwardSwitchChannel);
+      rv = nvs_set_u8(g_nvsHandle, "drop_swchf", g_persistent.espnowForwardSwitchChannel);
       if (rv != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to update droplet adj. freq. filter");
+        ESP_LOGE(TAG, "Failed to update espnow adj. freq. filter");
       }
 
       // channel
       if (ESP_OK == (rv = httpd_query_key_value(buf, "channel", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => channel=%s", param);
-        g_persistent.dropletChannel = atoi(param);
+        g_persistent.espnowChannel = atoi(param);
         // Write changed value to persistent storage
-        rv = nvs_set_u8(g_nvsHandle, "drop_ch", g_persistent.dropletChannel);
+        rv = nvs_set_u8(g_nvsHandle, "drop_ch", g_persistent.espnowChannel);
         if (rv != ESP_OK) {
-          ESP_LOGE(TAG, "Failed to update droplet channel");
+          ESP_LOGE(TAG, "Failed to update espnow channel");
         }
       }
       else {
-        ESP_LOGE(TAG, "Error getting droplet channel => rv=%d", rv);
+        ESP_LOGE(TAG, "Error getting espnow channel => rv=%d", rv);
       }
 
       // ttl
       if (ESP_OK == (rv = httpd_query_key_value(buf, "ttl", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => ttl=%s", param);
-        g_persistent.dropletTtl = atoi(param);
+        g_persistent.espnowTtl = atoi(param);
         // Write changed value to persistent storage
-        rv = nvs_set_u8(g_nvsHandle, "drop_ttl", g_persistent.dropletTtl);
+        rv = nvs_set_u8(g_nvsHandle, "drop_ttl", g_persistent.espnowTtl);
         if (rv != ESP_OK) {
-          ESP_LOGE(TAG, "Failed to update droplet ttl");
+          ESP_LOGE(TAG, "Failed to update espnow ttl");
         }
       }
       else {
-        ESP_LOGE(TAG, "Error getting droplet ttl => rv=%d", rv);
+        ESP_LOGE(TAG, "Error getting espnow ttl => rv=%d", rv);
       }
 
       // Queue size
       if (ESP_OK == (rv = httpd_query_key_value(buf, "qsize", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => qsize=%s", param);
-        g_persistent.dropletSizeQueue = atoi(param);
+        g_persistent.espnowSizeQueue = atoi(param);
         // Write changed value to persistent storage
-        rv = nvs_set_u8(g_nvsHandle, "drop_qsize", g_persistent.dropletSizeQueue);
+        rv = nvs_set_u8(g_nvsHandle, "drop_qsize", g_persistent.espnowSizeQueue);
         if (rv != ESP_OK) {
-          ESP_LOGE(TAG, "Failed to update droplet qsize");
+          ESP_LOGE(TAG, "Failed to update espnow qsize");
         }
       }
       else {
-        ESP_LOGE(TAG, "Error getting droplet queue size => rv=%d", rv);
+        ESP_LOGE(TAG, "Error getting espnow queue size => rv=%d", rv);
       }
 
       // rssi
       if (ESP_OK == (rv = httpd_query_key_value(buf, "rssi", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => rssi=%s", param);
-        g_persistent.dropletFilterWeakSignal = atoi(param);
+        g_persistent.espnowFilterWeakSignal = atoi(param);
         // Make shure it's negative
-        if (g_persistent.dropletFilterWeakSignal > 0) {
-          g_persistent.dropletFilterWeakSignal *= -1;
+        if (g_persistent.espnowFilterWeakSignal > 0) {
+          g_persistent.espnowFilterWeakSignal *= -1;
         }
         // Write changed value to persistent storage
-        rv = nvs_set_i8(g_nvsHandle, "drop_rssi", g_persistent.dropletFilterWeakSignal);
+        rv = nvs_set_i8(g_nvsHandle, "drop_rssi", g_persistent.espnowFilterWeakSignal);
         if (rv != ESP_OK) {
-          ESP_LOGE(TAG, "Failed to update droplet rssi");
+          ESP_LOGE(TAG, "Failed to update espnow rssi");
         }
       }
       else {
-        ESP_LOGE(TAG, "Error getting droplet rssi => rv=%d", rv);
+        ESP_LOGE(TAG, "Error getting espnow rssi => rv=%d", rv);
       }
 
 /*
       // Encryption
       if (ESP_OK == (rv = httpd_query_key_value(buf, "enc", param, WEBPAGE_PARAM_SIZE))) {
         ESP_LOGI(TAG, "Found query parameter => enc=%s", param);
-        g_persistent.dropletEncryption = atoi(param);
-        rv                             = nvs_set_u8(g_nvsHandle, "drop_enc", g_persistent.dropletEncryption);
+        g_persistent.espnowEncryption = atoi(param);
+        rv                             = nvs_set_u8(g_nvsHandle, "drop_enc", g_persistent.espnowEncryption);
         if (rv != ESP_OK) {
-          ESP_LOGE(TAG, "Failed to update droplet encryption");
+          ESP_LOGE(TAG, "Failed to update espnow encryption");
         }
       }
       else {
-        ESP_LOGE(TAG, "Error getting droplet enc => rv=%d", rv);
+        ESP_LOGE(TAG, "Error getting espnow enc => rv=%d", rv);
       }
 */
       rv = nvs_commit(g_nvsHandle);
@@ -2329,8 +2329,8 @@ do_config_droplet_get_handler(httpd_req_t *req)
     VSCP_FREE(buf);
   }
   const char *resp_str =
-    "<html><head><meta charset='utf-8'><meta http-equiv=\"refresh\" content=\"1;url=cfgdroplet\" "
-    "/><style>" WEBPAGE_STYLE_CSS "</style></head><body><h2 class=\"name\">saving droplet data...</h2></body></html>";
+    "<html><head><meta charset='utf-8'><meta http-equiv=\"refresh\" content=\"1;url=cfgespnow\" "
+    "/><style>" WEBPAGE_STYLE_CSS "</style></head><body><h2 class=\"name\">saving espnow data...</h2></body></html>";
   httpd_resp_send(req, resp_str, HTTPD_RESP_USE_STRLEN);
 
   return ESP_OK;
@@ -3289,13 +3289,13 @@ do_config_log_get_handler(httpd_req_t *req)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// upd_droplet_get_handler
+// upd_espnow_get_handler
 //
-// Update droplet configuration settings
+// Update espnow configuration settings
 //
 
 // static esp_err_t
-// upd_droplet_get_handler(httpd_req_t *req)
+// upd_espnow_get_handler(httpd_req_t *req)
 // {
 //   char *buf;
 //   size_t buf_len;
@@ -3642,14 +3642,14 @@ default_get_handler(httpd_req_t *req)
     return do_config_wifi_get_handler(req);
   }
 
-  if (0 == strncmp(req->uri, "/cfgdroplet", 11)) {
-    ESP_LOGV(TAG, "--------- cfgdroplet ---------\n");
-    return config_droplet_get_handler(req);
+  if (0 == strncmp(req->uri, "/cfgespnow", 11)) {
+    ESP_LOGV(TAG, "--------- cfgespnow ---------\n");
+    return config_espnow_get_handler(req);
   }
 
-  if (0 == strncmp(req->uri, "/docfgdroplet", 13)) {
-    ESP_LOGV(TAG, "--------- docfgdroplet ---------\n");
-    return do_config_droplet_get_handler(req);
+  if (0 == strncmp(req->uri, "/docfgespnow", 13)) {
+    ESP_LOGV(TAG, "--------- docfgespnow ---------\n");
+    return do_config_espnow_get_handler(req);
   }
 
   if (0 == strncmp(req->uri, "/cfgvscplink", 11)) {

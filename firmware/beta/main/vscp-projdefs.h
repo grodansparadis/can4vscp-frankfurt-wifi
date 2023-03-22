@@ -11,10 +11,24 @@
 //#define VSCP_PROJDEF_LED_STRIP
 #define VSCP_PROJDEF_LED_SIMPLE
 
+#define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCP-DROPLET"
+
 /*!
   Name of device for level II capabilities announcement event.
 */
-#define THIS_FIRMWARE_DEVICE_NAME "Frankdurt wifi alpha"
+#define VSCP_PROJDEF_DEVICE_NAME "Frankfurt wifi beta"
+
+/*!
+  Number of buttons
+*/
+#define VSCP_PROJDEF_BUTTON_CNT     1
+
+#define VSCP_PROJDEF_ESP_MAXIMUM_RETRY  5
+
+/**
+ * Max 16 byte product id used for provisioning
+ */
+#define VSCP_PROJDEF_PROVISIONING_PRODUCT_ID   "VSCP ESPNOW"
 
 // ----------------------------------------------------------------------------
 //                        VSCP helper lib defines

@@ -23,6 +23,13 @@
 */
 #define VSCP_PROJDEF_BUTTON_CNT     1
 
+#define VSCP_PROJDEF_ESP_MAXIMUM_RETRY  5
+
+/**
+ * Max 16 byte product id used for provisioning
+ */
+#define VSCP_PROJDEF_PROVISIONING_PRODUCT_ID   "VSCP ESPNOW"
+
 // ----------------------------------------------------------------------------
 //                        VSCP helper lib defines
 // ----------------------------------------------------------------------------

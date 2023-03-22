@@ -643,13 +643,6 @@
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/main/CMakeFiles/install.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/main/CMakeFiles/install/local.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/main/CMakeFiles/install/strip.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/__idf_espnow_device.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/edit_cache.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/rebuild_cache.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/list_install_components.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/install.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/install/local.dir
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/espnow_device/CMakeFiles/install/strip.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/wifi_prov/CMakeFiles/edit_cache.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/wifi_prov/CMakeFiles/rebuild_cache.dir
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/beta/build/esp-idf/wifi_prov/CMakeFiles/list_install_components.dir

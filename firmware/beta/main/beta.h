@@ -64,19 +64,19 @@ typedef struct {
   char nodeName[32];    // User name for node
   uint8_t pmk[16];      // Primary key
   uint8_t nodeGuid[16]; // GUID for node (default: Constructed from MAC address)
-  uint32_t queueSize;   // espnow queue size
+  uint8_t queueSize;   // espnow queue size
   uint8_t startDelay;   // Delay before wifi is enabled (to charge cap)
   uint32_t bootCnt;     // Number of restarts (not editable)
 
   // espnow
-  bool enLongRange;             // Enable long range mode
-  uint8_t enSizeQueue;          // Input queue size
-  uint8_t enChannel;           // Channel to use (zero is current)
-  uint8_t enTtl;                // Default ttl
-  bool enForwardEnable;         // Forward when packets are received
-  bool enFilterAdjacentChannel; // Don't receive if from other channel
-  bool enForwardSwitchChannel;  // Allow switching channel on forward
-  int8_t enFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
+  bool espnowLongRange;             // Enable long range mode
+  uint8_t espnowSizeQueue;          // Input queue size
+  uint8_t espnowChannel;           // Channel to use (zero is current)
+  uint8_t espnowTtl;                // Default ttl
+  bool espnowForwardEnable;         // Forward when packets are received
+  bool espnowFilterAdjacentChannel; // Don't receive if from other channel
+  bool espnowForwardSwitchChannel;  // Allow switching channel on forward
+  int8_t espnowFilterWeakSignal;    // Filter on RSSI (zero is no rssi filtering)
 } node_persistent_config_t;
 
 // ----------------------------------------------------------------------------

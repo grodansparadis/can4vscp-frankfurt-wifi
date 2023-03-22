@@ -121,17 +121,17 @@ typedef enum {
  */
 typedef struct {
   vscp_espnow_node_type_t nodeType; // Alpha/Gamma/Beta
-  uint8_t channel;              // Channel to use (zero is current)
-  uint8_t ttl;                  // Default ttl
-  bool bForwardEnable;          // Forward when packets are received
-  bool bForwardSwitchChannel;   // Forward data packet with exchange channel
-  uint8_t sizeQueue;            // Size of receive queue
-  uint8_t nEncryption;          // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
-  bool bFilterAdjacentChannel;  // Don't receive if from other channel
-  int filterWeakSignal;         // Filter onm RSSI (zero is no rssi filtering)
-  uint8_t *lkey;                // Pointer to 32 byte local key (16 (EAS128)/24(AES192)/32(AES256)) (Beta/Gammal nodes)
-  uint8_t *pmk;                 // Pointer tp 32 byte primary master key (16 (EAS128)/24(AES192)/32(AES256))
-  uint8_t *nodeGuid;            // Pointer to 16 byte GUID for node.
+  uint8_t channel;                  // Channel to use (zero is current)
+  uint8_t ttl;                      // Default ttl
+  bool bForwardEnable;              // Forward when packets are received
+  bool bForwardSwitchChannel;       // Forward data packet with exchange channel
+  uint8_t sizeQueue;                // Size of receive queue
+  uint8_t nEncryption;              // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
+  bool bFilterAdjacentChannel;      // Don't receive if from other channel
+  int filterWeakSignal;             // Filter onm RSSI (zero is no rssi filtering)
+  uint8_t *lkey;     // Pointer to 32 byte local key (16 (EAS128)/24(AES192)/32(AES256)) (Beta/Gammal nodes)
+  uint8_t *pmk;      // Pointer tp 32 byte primary master key (16 (EAS128)/24(AES192)/32(AES256))
+  uint8_t *nodeGuid; // Pointer to 16 byte GUID for node.
 } vscp_espnow_config_t;
 
 /**
@@ -150,6 +150,23 @@ typedef struct {
   uint32_t nRecvŔssiFilter;  // RSSI filter stats
   uint32_t nForw;            // # Number of forwarded frames
 } vscp_espnow_stats_t;
+
+/**
+ * @brief Provision data
+ * This stucture is sent to node when the provisioning button
+ * is activated. It sets channel for the cluster among other espnow
+ * parameters
+ */
+typedef struct {
+  uint8_t espnowLongRange;             // Enable long range mode
+  uint8_t espnowSizeQueue;             // Input queue size
+  uint8_t espnowChannel;               // Channel to use (zero is current)
+  uint8_t espnowTtl;                   // Default ttl
+  uint8_t espnowForwardEnable;         // Forward when packets are received
+  uint8_t espnowFilterAdjacentChannel; // Don't receive if from other channel
+  uint8_t espnowForwardSwitchChannel;  // Allow switching channel on forward
+  int8_t espnowFilterWeakSignal;       // Filter on RSSI (zero is no rssi filtering)
+} vscp_espnow_prov_data_t __attribute__((packed));
 
 #define VSCP_ESPNOW_MSG_CACHE_SIZE           32    // Size for magic cache
 #define VSCP_ESPNOW_HEART_BEAT_INTERVAL      30000 // Milliseconds between heartbeat events
@@ -188,9 +205,9 @@ typedef void (*vscp_espnow_attach_network_handler_cb_t)(wifi_pkt_rx_ctrl_t *prxd
 // ----------------------------------------------------------------------------
 
 /**
- * @fn vscp_espnow_heartbeat_task 
+ * @fn vscp_espnow_heartbeat_task
  * @brief Task that send VSCP heartbeat events every minute
- * 
+ *
  * @param pvParameter Pinter to data paremeter for task (not used)
  */
 void
@@ -220,7 +237,7 @@ vscp_espnow_build_guid_from_mac(uint8_t *pguid, const uint8_t *pmac, uint16_t ni
  * @fn vscp_espnow_sendEvent
  * @brief  Send event on vscp_espnow network
  *
- * @param destAddr Destination address. Can be NULL in which case the event 
+ * @param destAddr Destination address. Can be NULL in which case the event
  *  is sent to all hosts in table.
  * @param pev Event to send
  * @param wait_ms Time in milliseconds to wait for send
@@ -234,7 +251,7 @@ vscp_espnow_sendEvent(const uint8_t *destAddr, const vscpEvent *pev, uint32_t wa
  * @fn vscp_espnow_sendEventEx
  * @brief Send event ex on vscp_espnow network
  *
- * @param destAddr Destination address. Can be NULL in which case the event 
+ * @param destAddr Destination address. Can be NULL in which case the event
  *  is sent to all hosts in table.
  * @param pex Pointer to event ex to send.
  * @param wait_ms Time in milliseconds to wait for send
@@ -358,7 +375,6 @@ vscp_espnow_parse_vscp_json(vscpEvent *pev, const char *jsonVscpEventObj);
  */
 int
 vscp_espnow_create_vscp_json(char *strObj, size_t len, vscpEvent *pev);
-
 
 #ifdef __cplusplus
 }

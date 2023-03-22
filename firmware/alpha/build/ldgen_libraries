@@ -64,5 +64,4 @@
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/espressif__led_indicator/libespressif__led_indicator.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/espressif__qrcode/libespressif__qrcode.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/main/libmain.a
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/espnow_device/libespnow_device.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/alpha/build/esp-idf/wifi_prov/libwifi_prov.a
