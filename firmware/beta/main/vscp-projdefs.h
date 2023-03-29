@@ -8,10 +8,10 @@
 #define _VSCP_PROJDEFS_H_
 
 // Define one of
-//#define VSCP_PROJDEF_LED_STRIP
+// #define VSCP_PROJDEF_LED_STRIP
 #define VSCP_PROJDEF_LED_SIMPLE
 
-#define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCP-DROPLET"
+#define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCPDEVICE"
 
 /*!
   Name of device for level II capabilities announcement event.
@@ -21,14 +21,14 @@
 /*!
   Number of buttons
 */
-#define VSCP_PROJDEF_BUTTON_CNT     1
+#define VSCP_PROJDEF_BUTTON_CNT 1
 
-#define VSCP_PROJDEF_ESP_MAXIMUM_RETRY  5
+#define VSCP_PROJDEF_ESP_MAXIMUM_RETRY 5
 
 /**
  * Max 16 byte product id used for provisioning
  */
-#define VSCP_PROJDEF_PROVISIONING_PRODUCT_ID   "VSCP ESPNOW"
+#define VSCP_PROJDEF_PROVISIONING_PRODUCT_ID "VSCP ESPNOW"
 
 // ----------------------------------------------------------------------------
 //                        VSCP helper lib defines
@@ -140,7 +140,6 @@
   ----------------------------------------------------------------------------
   Defines for firmware level II
 */
-
 
 /**
  * Firmware version

@@ -65,39 +65,44 @@ extern "C" {
  * @brief Frame positions for data in the VSCP esp-now frame
  */
 
-// Identify as esp-now frame (0x55/0xAA)  X = esp-now protocol version
+// Identify as esp-now frame (0x55/0xAA)
 #define VSCP_ESPNOW_POS_ID 0
 
 // 0xab where b = esp-now protocol version and a = type (alpha/beta...)
+// bit 7,6 - Alfa/beta/gamma
+// bit 5,4 - protocol version (0)
+// bit 3,2,1,0 - Encryption (0=none/1=AES128(/2=AES192/3=AES256))
 #define VSCP_ESPNOW_POS_TYPE_VER 2
 
 // VSCP content
 #define VSCP_ESPNOW_POS_HEAD       3  // VSCP head bytes (2)
-#define VSCP_ESPNOW_POS_NICKNAME   4  // Node nickname (2)
-#define VSCP_ESPNOW_POS_VSCP_CLASS 5  // VSCP class (2)
-#define VSCP_ESPNOW_POS_VSCP_TYPE  6  // VSCP Type (2)
+#define VSCP_ESPNOW_POS_NICKNAME   5  // Node nickname (2)
+#define VSCP_ESPNOW_POS_VSCP_CLASS 7  // VSCP class (2)
+#define VSCP_ESPNOW_POS_VSCP_TYPE  9  // VSCP Type (2)
 #define VSCP_ESPNOW_POS_SIZE       11 // Data size (needed because of encryption padding) (1)
 #define VSCP_ESPNOW_POS_DATA       12 // VSCP data (max 128 bytes)
 
 #define VSCP_ESPNOW_MIN_FRAME VSCP_ESPNOW_POS_DATA // Number of bytes in minimum frame
 #define VSCP_ESPNOW_MAX_DATA                                                                                           \
   (ESPNOW_SEC_PACKET_MAX_SIZE - VSCP_ESPNOW_MIN_FRAME) // Max VSCP data (of possible 512 bytes) that a frame can hold
-#define VSCP_ESPNOW_MAX_FRAME (ESPNOW_SEC_PACKET_MAX_SIZE - VSCP_ESPNOW_MIN_FRAME)
+#define VSCP_ESPNOW_MAX_FRAME (ESPNOW_SEC_PACKET_MAX_SIZE - VSCP_ESPNOW_MIN_FRAME - 16) // 16 byte for iv
 
 /*
-  Note on  max data size
-  ----------------------
+  Note on max data size
+  ---------------------
   An esp-now frame can hold a payload of max 250 bytes
   IV is 16 bytes
   VSCP frame data is 16 -bytes
   So left for Droplet data is 250-16-15 = 219 bytes
 */
 
-typedef enum {
-  VSCP_ESPNOW_ALPHA_NODE = 0,
-  VSCP_ESPNOW_BETA_NODE,
-  VSCP_ESPNOW_GAMMA_NODE,
-} vscp_espnow_node_type_t;
+#define VSCP_ESPNOW_IV_LEN 16
+
+// typedef enum {
+//   VSCP_ESPNOW_ALPHA_NODE = 0,
+//   VSCP_ESPNOW_BETA_NODE,
+//   VSCP_ESPNOW_GAMMA_NODE,
+// } vscp_espnow_node_type_t;
 
 /*
   The idel state is the normal state a node is in. This is where it does all it's
@@ -120,18 +125,9 @@ typedef enum {
  * @brief Initialize the configuration of esp-now
  */
 typedef struct {
-  vscp_espnow_node_type_t nodeType; // Alpha/Gamma/Beta
-  uint8_t channel;                  // Channel to use (zero is current)
-  uint8_t ttl;                      // Default ttl
-  bool bForwardEnable;              // Forward when packets are received
-  bool bForwardSwitchChannel;       // Forward data packet with exchange channel
-  uint8_t sizeQueue;                // Size of receive queue
-  uint8_t nEncryption;              // 0=no encryption, 1=AES-128, 2=AES-192, 3=AES-256
-  bool bFilterAdjacentChannel;      // Don't receive if from other channel
-  int filterWeakSignal;             // Filter onm RSSI (zero is no rssi filtering)
-  uint8_t *lkey;     // Pointer to 32 byte local key (16 (EAS128)/24(AES192)/32(AES256)) (Beta/Gammal nodes)
-  uint8_t *pmk;      // Pointer tp 32 byte primary master key (16 (EAS128)/24(AES192)/32(AES256))
-  uint8_t *nodeGuid; // Pointer to 16 byte GUID for node.
+  uint8_t *pmk;  // Pointer to 16 byte system key
+  uint8_t *lmk;  // Pointer to 16 byte local key
+  uint8_t *pguid; // Pointer to 16 byte GUID for node.
 } vscp_espnow_config_t;
 
 /**
@@ -166,7 +162,7 @@ typedef struct {
   uint8_t espnowFilterAdjacentChannel; // Don't receive if from other channel
   uint8_t espnowForwardSwitchChannel;  // Allow switching channel on forward
   int8_t espnowFilterWeakSignal;       // Filter on RSSI (zero is no rssi filtering)
-} vscp_espnow_prov_data_t __attribute__((packed));
+} vscp_espnow_prov_data_t;
 
 #define VSCP_ESPNOW_MSG_CACHE_SIZE           32    // Size for magic cache
 #define VSCP_ESPNOW_HEART_BEAT_INTERVAL      30000 // Milliseconds between heartbeat events
@@ -176,23 +172,26 @@ typedef struct {
 #define VSCP_ESPNOW_SRV_SEND_KEY_CNT         3
 
 // Control states for esp-now provisioning
-typedef enum { VSCP_ESPNOW_CTRL_INIT, VSCP_ESPNOW_CTRL_BOUND, DEOPLET_CTRL_MAX } vscp_espnow_ctrl_status_t;
+// typedef enum { VSCP_ESPNOW_CTRL_INIT, VSCP_ESPNOW_CTRL_BOUND, DROPLET_CTRL_MAX } vscp_espnow_ctrl_status_t;
 
 /**
  * @brief The channel on which the device sends packets
  */
-#define VSCP_ESPNOW_CHANNEL_CURRENT 0x0  // Only in the current channel
-#define VSCP_ESPNOW_CHANNEL_ALL     0x0f // All supported channels
+// #define VSCP_ESPNOW_CHANNEL_CURRENT 0x0  // Only in the current channel
+// #define VSCP_ESPNOW_CHANNEL_ALL     0x0f // All supported channels
 
 #define VSCP_ESPNOW_FORWARD_MAX_COUNT 0xff // Maximum number of forwards
 
-#define VSCP_ESPNOW_ADDR_LEN                  (6)
-#define VSCP_ESPNOW_DECLARE_COMMON_ADDR(addr) extern const uint8_t addr[6];
-#define VSCP_ESPNOW_ADDR_IS_EMPTY(addr)       (((addr)[0] | (addr)[1] | (addr)[2] | (addr)[3] | (addr)[4] | (addr)[5]) == 0x0)
-#define VSCP_ESPNOW_ADDR_IS_BROADCAST(addr)                                                                            \
-  (((addr)[0] & (addr)[1] & (addr)[2] & (addr)[3] & (addr)[4] & (addr)[5]) == 0xFF)
-#define VSCP_ESPNOW_ADDR_IS_SELF(addr)          !memcmp(addr, VSCP_ESPNOW_ADDR_SELF, 6)
-#define VSCP_ESPNOW_ADDR_IS_EQUAL(addr1, addr2) !memcmp(addr1, addr2, 6)
+/*
+// #define VSCP_ESPNOW_ADDR_LEN                  (6)
+// #define VSCP_ESPNOW_DECLARE_COMMON_ADDR(addr) extern const uint8_t addr[6];
+// #define VSCP_ESPNOW_ADDR_IS_EMPTY(addr)       (((addr)[0] | (addr)[1] | (addr)[2] | (addr)[3] | (addr)[4] |
+(addr)[5]) == 0x0)
+// #define VSCP_ESPNOW_ADDR_IS_BROADCAST(addr) \
+//   (((addr)[0] & (addr)[1] & (addr)[2] & (addr)[3] & (addr)[4] & (addr)[5]) == 0xFF)
+// #define VSCP_ESPNOW_ADDR_IS_SELF(addr)          !memcmp(addr, VSCP_ESPNOW_ADDR_SELF, 6)
+// #define VSCP_ESPNOW_ADDR_IS_EQUAL(addr1, addr2) !memcmp(addr1, addr2, 6)
+*/
 
 // Callback functions
 
@@ -220,7 +219,16 @@ vscp_espnow_heartbeat_task(void *pvParameter);
  * @return esp_err_t
  */
 esp_err_t
-vscp_espnow_init(size_t sizeQueue);
+vscp_espnow_init(const vscp_espnow_config_t *pconfig);
+
+/**
+ * @brief Send alpha probe
+ * 
+ * @return int VSCP_ERROR_SUCCESS if all is OK
+ */
+
+int
+vscp_espnow_probe(void);
 
 /**
  * @brief Build full GUID from mac address
@@ -245,7 +253,11 @@ vscp_espnow_build_guid_from_mac(uint8_t *pguid, const uint8_t *pmac, uint16_t ni
  */
 
 int
-vscp_espnow_sendEvent(const uint8_t *destAddr, const vscpEvent *pev, uint32_t wait_ms);
+vscp_espnow_sendEvent(const uint8_t *destAddr,
+                      const vscpEvent *pev,
+                      const uint8_t *pkey,
+                      uint8_t nEncryption,
+                      uint32_t wait_ms);
 
 /**
  * @fn vscp_espnow_sendEventEx
@@ -258,7 +270,11 @@ vscp_espnow_sendEvent(const uint8_t *destAddr, const vscpEvent *pev, uint32_t wa
  * @return int Error code. VSCP_ERROR_SUCCESS if all is OK.
  */
 int
-vscp_espnow_sendEventEx(const uint8_t *destAddr, const vscpEventEx *pex, uint32_t wait_ms);
+vscp_espnow_sendEventEx(const uint8_t *destAddr,
+                        const vscpEventEx *pex,
+                        const uint8_t *pkey,
+                        uint8_t nEncryption,
+                        uint32_t wait_ms);
 
 /**
  * @fn vscp_espnow_getMinBufSizeEv

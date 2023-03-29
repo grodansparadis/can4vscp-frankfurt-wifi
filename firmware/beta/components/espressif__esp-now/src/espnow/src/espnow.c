@@ -498,6 +498,8 @@ esp_err_t espnow_send(espnow_data_type_t type, const espnow_addr_t dest_addr, co
     espnow_data_t *espnow_data = NULL;
     bool enc = false;
 
+    //printf("Send channel=%d\n", frame_head->channel);
+
     if (g_espnow_config->sec_enable
         && type != ESPNOW_DATA_TYPE_ACK && type != ESPNOW_DATA_TYPE_FORWARD
         && type != ESPNOW_DATA_TYPE_SECURITY_STATUS && type != ESPNOW_DATA_TYPE_SECURITY) {

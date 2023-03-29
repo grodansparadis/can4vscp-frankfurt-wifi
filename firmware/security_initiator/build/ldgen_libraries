@@ -58,5 +58,3 @@
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/spiffs/libspiffs.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/ulp/libulp.a
 /usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/espressif__esp-now/libespressif__esp-now.a
-/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/main/libmain.a

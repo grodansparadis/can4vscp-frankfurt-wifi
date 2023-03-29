@@ -44,7 +44,9 @@
 
 #include <iot_button.h>
 
-#include "led_indicator.h" // https://docs.espressif.com/projects/espressif-esp-iot-solution/en/latest/display/led_indicator.html
+// https://docs.espressif.com/projects/espressif-esp-iot-solution/en/latest/display/led_indicator.html
+#include "led_indicator.h"
+#include "led_indicator_blink_default.h"
 
 #include <vscp.h>
 #include <vscp-firmware-helper.h>
@@ -62,6 +64,7 @@
 static espnow_addr_t ESPNOW_ADDR_SELF = { 0 };
 
 static const char *TAG = "app";
+static const char *POP = VSCP_PROJDEF_ESPNOW_SESSION_POP;
 
 // All the default GPIOs are based on ESP32 series DevKitC boards, for other boards, please modify them accordingly.
 #ifdef CONFIG_IDF_TARGET_ESP32C2
@@ -99,7 +102,7 @@ static EventGroupHandle_t s_wifi_event_group;
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT      BIT1
 
-const char *pop_data = VSCP_PROJDEF_ESPNOW_SESSION_POP;
+// const char *pop_data = VSCP_PROJDEF_ESPNOW_SESSION_POP;
 static TaskHandle_t s_sec_task;
 static TaskHandle_t s_prov_task;
 
@@ -113,6 +116,8 @@ node_persistent_config_t g_persistent = {
 
   // General
   .nodeName   = "Beta Node",
+  .pmk        = { 0 },
+  .lmk        = { 0 },
   .nodeGuid   = { 0 }, // GUID for unit
   .startDelay = 2,
   .bootCnt    = 0,
@@ -150,6 +155,25 @@ setPersistenDefaults(void)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// set_pmk
+//
+// Write the pmk (primary key) to persistent storage.
+//
+
+static esp_err_t
+set_pmk(const uint8_t pmk[16])
+{
+  esp_err_t ret;
+  ret = nvs_set_blob(g_nvsHandle, "pmk", pmk, 16);
+  if (ret != ESP_OK) {
+    ESP_LOGE(TAG, "Failed to write pmk to nvs. rv=%d", ret);
+    return ret;
+  }
+  memcpy(g_persistent.pmk, pmk, 16);
+  return ESP_OK;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // readPersistentConfigs
 //
 
@@ -162,7 +186,53 @@ readPersistentConfigs(void)
   uint8_t val;
 
   // Set default primary key
-  vscp_fwhlp_hex2bin(g_persistent.pmk, 16, VSCP_DEFAULT_KEY16);
+  // vscp_fwhlp_hex2bin(g_persistent.pmk, 16, VSCP_DEFAULT_KEY16);
+
+  // pmk
+  length = 16;
+  rv     = nvs_get_blob(g_nvsHandle, "pmk", g_persistent.pmk, &length);
+  switch (rv) {
+
+    case ESP_OK:
+      ESP_LOGI(TAG, "pmk read from nvs");
+      break;
+
+    case ESP_ERR_NVS_NOT_FOUND:
+      ESP_LOGE(TAG, "The pmk is not initialized yet!");
+      esp_fill_random(g_persistent.pmk, 16);
+      rv = nvs_set_blob(g_nvsHandle, "pmk", g_persistent.pmk, 16);
+      if (rv != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to write pmk to nvs. rv=%d", rv);
+      }
+      break;
+
+    default:
+      ESP_LOGE(TAG, "Error (%s) reading pmk.", esp_err_to_name(rv));
+      break;
+  }
+
+  // lmk
+  length = 16;
+  rv     = nvs_get_blob(g_nvsHandle, "lmk", g_persistent.lmk, &length);
+  switch (rv) {
+
+    case ESP_OK:
+      ESP_LOGI(TAG, "lmk read from nvs");
+      break;
+
+    case ESP_ERR_NVS_NOT_FOUND:
+      ESP_LOGE(TAG, "The lmk is not initialized yet!");
+      esp_fill_random(g_persistent.lmk, 16);
+      rv = nvs_set_blob(g_nvsHandle, "lmk", g_persistent.lmk, 16);
+      if (rv != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to write lmk to nvs. rv=%d", rv);
+      }
+      break;
+
+    default:
+      ESP_LOGE(TAG, "Error (%s) reading lmk.", esp_err_to_name(rv));
+      break;
+  }
 
   // boot counter
   rv = nvs_get_u32(g_nvsHandle, "boot_counter", &g_persistent.bootCnt);
@@ -415,6 +485,10 @@ app_espnow_event_handler(void *handler_args, esp_event_base_t base, int32_t id, 
   }
 }
 
+// --------------------------------------------------------------------------
+//                                   CTRL
+// --------------------------------------------------------------------------
+
 ///////////////////////////////////////////////////////////////////////////////
 // app_responder_ctrl_data_cb
 //
@@ -437,6 +511,10 @@ app_responder_ctrl_data_cb(espnow_attribute_t initiator_attribute,
     // app_led_set_color(0, 0, 0);
   }
 }
+
+// --------------------------------------------------------------------------
+//                                  PROV
+// --------------------------------------------------------------------------
 
 /////////////////////////////////////////////////////////////////////////////
 // app_espnow_prov_initiator_recv_cb
@@ -491,7 +569,9 @@ app_espnow_prov_initiator_recv_cb(uint8_t *src_addr, void *data, size_t size, wi
            wifi_config->sta.password,
            wifi_config->token);
 
+  // Set the provisioned channel
   ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, (wifi_config_t *) &wifi_config->sta));
+  esp_wifi_set_channel(rx_ctrl->channel, WIFI_SECOND_CHAN_NONE);
   // ESP_ERROR_CHECK(esp_wifi_connect());
   return ESP_OK;
 }
@@ -517,6 +597,7 @@ app_espnow_prov_initiator_init(void *arg)
 
     // Security key is not ready
     if (espnow_get_key(key_info) != ESP_OK) {
+      ESP_LOGW(TAG, "Security key is not set - waiting for it");
       vTaskDelay(pdMS_TO_TICKS(1000));
       continue;
     }
@@ -538,6 +619,7 @@ app_espnow_prov_initiator_init(void *arg)
                                      pdMS_TO_TICKS(3 * 1000));
     ESP_ERROR_CONTINUE(ret != ESP_OK, "<%s> espnow_prov_responder_add", esp_err_to_name(ret));
 
+    ESP_LOGI(TAG, "===> Provisioned");
     break;
   }
 
@@ -653,10 +735,15 @@ static void
 app_start_beacon_press_cb(void *arg, void *usr_data)
 {
   ESP_ERROR_CHECK(!(BUTTON_SINGLE_CLICK == iot_button_get_event(arg)));
-  ESP_LOGI(TAG, "Starting provision beacon");
-  // app_espnow_responder();
-  // app_espnow_prov_beacon_start(30);
-  xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
+  ESP_LOGI(TAG, "Starting sec");
+  // espnow_sec_responder_start(POP);
+  //  app_espnow_responder();
+  //  app_espnow_responder();
+  //   app_espnow_prov_beacon_start(30);
+  //  xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
+
+  vscp_espnow_probe();
+  espnow_sec_responder_start(POP);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -667,6 +754,8 @@ static void
 app_wifi_prov_start_press_cb(void *arg, void *usr_data)
 {
   ESP_ERROR_CHECK(!(BUTTON_DOUBLE_CLICK == iot_button_get_event(arg)));
+
+  ESP_LOGI(TAG, "Starting wifi provisioning");
 
   // app_espnow_prov_initiator_init()
 
@@ -704,8 +793,9 @@ app_wifi_prov_reset_press_cb(void *arg, void *usr_data)
 {
   ESP_ERROR_CHECK(!(BUTTON_LONG_PRESS_START == iot_button_get_event(arg)));
 
-  espnow_erase_key();     // Unbound device
+  ESP_LOGI(TAG, "Restore factory defaults");
 
+  espnow_erase_key();     // Unbound device
   setPersistenDefaults(); // set defaults
 
   // Erase all settings
@@ -718,21 +808,9 @@ app_wifi_prov_reset_press_cb(void *arg, void *usr_data)
   esp_restart();
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// vscp_espnow_data_cb
-//
-
-static void
-vscp_espnow_data_cb(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
-{
-  esp_err_t ret;
-  uint8_t ch                = 0;
-  wifi_second_chan_t second = WIFI_SECOND_CHAN_NONE;
-  if (ESP_OK != (ret = esp_wifi_get_channel(&ch, &second))) {
-    ESP_LOGE(TAG, "Failed to get wifi channel, rv = %X", ret);
-  }
-  ESP_LOGI(TAG, "|| esp-now data received. len=%zd ch=%d (%d) " MACSTR, size, MAC2STR(src_addr), ch, second);
-}
+// --------------------------------------------------------------------------
+//                                  SEC
+// --------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 //                                  ESPNOW
@@ -805,7 +883,8 @@ vscp_espnow_data_cb(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl
 //     /**
 //      * @brief Read the log data and transfer the data out via http server
 //      */
-//     for (size_t size = MIN(ESPNOW_DATA_LEN, log_size); size > 0 && espnow_log_flash_read(log_data, &size) == ESP_OK;
+//     for (size_t size = MIN(ESPNOW_DATA_LEN, log_size); size > 0 && espnow_log_flash_read(log_data, &size) ==
+//     ESP_OK;
 //          log_size -= size, size = MIN(ESPNOW_DATA_LEN, log_size)) {
 //       ret = esp_http_client_write(client, log_data, size);
 //       ESP_ERROR_BREAK(ret < 0, "<%s> Failed to write HTTP data", esp_err_to_name(ret));
@@ -929,7 +1008,7 @@ app_wifi_init()
 void
 app_espnow_responder()
 {
-  const char *pop_data = VSCP_PROJDEF_ESPNOW_SESSION_POP;
+  esp_err_t ret;
   uint8_t key_info[APP_KEY_LEN];
 
   // If espnow_set_key succeed, sending and receiving will be in security mode
@@ -937,10 +1016,13 @@ app_espnow_responder()
     espnow_set_key(key_info);
   }
 
-  ESP_LOGI(TAG, "Starting sec");
+  ESP_LOGI(TAG, "Starting sec POP=[%s]", POP);
 
   // If responder handshake with initiator succeed, espnow_set_key will be executed again.
-  espnow_sec_responder_start(pop_data);
+  ret = espnow_sec_responder_start(POP);
+  if (ESP_OK != ret) {
+    ESP_LOGE(TAG, "Failed to start sec responder %s", POP);
+  }
 
   ESP_LOGI(TAG, "Starting time sync");
 
@@ -971,7 +1053,10 @@ app_espnow_responder()
   };
 
   ESP_LOGI(TAG, "Starting ota");
-  espnow_ota_responder_start(&ota_config);
+  ret = espnow_ota_responder_start(&ota_config);
+  if (ESP_OK != ret) {
+    ESP_LOGE(TAG, "Failed to start OTA responder");
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1005,11 +1090,14 @@ app_main()
   }
 
   // Set the provisioned channel
-  esp_wifi_set_channel(g_persistent.espnowChannel, WIFI_SECOND_CHAN_NONE);
+  // esp_wifi_set_channel(0xf/*g_persistent.espnowChannel*/, WIFI_SECOND_CHAN_NONE);
+  //esp_wifi_set_channel(8, WIFI_SECOND_CHAN_NONE);
 
   espnow_config_t espnow_config = ESPNOW_INIT_CONFIG_DEFAULT();
-  espnow_config.qsize           = CONFIG_APP_ESPNOW_QUEUE_SIZE;
-  espnow_config.sec_enable      = 1;
+  // memcpy((uint8_t *) espnow_config.pmk, g_persistent.pmk, 16);
+  espnow_config.qsize          = CONFIG_APP_ESPNOW_QUEUE_SIZE;
+  espnow_config.sec_enable     = true;
+  espnow_config.forward_enable = true;
   espnow_init(&espnow_config);
 
   button_config_t button_config = {
@@ -1028,10 +1116,6 @@ app_main()
 
   // Set default primary key
   vscp_fwhlp_hex2bin(g_persistent.pmk, 16, VSCP_DEFAULT_KEY16);
-  memcpy((uint8_t *) espnow_config.pmk, g_persistent.pmk, 16);
-  espnow_config.qsize          = g_persistent.queueSize; // CONFIG_APP_ESPNOW_QUEUE_SIZE;
-  espnow_config.sec_enable     = 1;
-  espnow_config.forward_enable = 1;
 
   uint8_t key_info[APP_KEY_LEN];
   if (espnow_get_key(key_info) == ESP_OK) {
@@ -1054,24 +1138,36 @@ app_main()
   // ESP_ERROR_CHECK(espnow_ctrl_responder_bind(30 * 1000, -55, NULL));
   // espnow_ctrl_responder_data(app_responder_ctrl_data_cb);
 
-  app_espnow_responder();
+  // app_espnow_responder();
+
+  // xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
 
   // Setup VSCP esp-now
 
-  espnow_set_config_for_data_type(ESPNOW_DATA_TYPE_DATA, true, vscp_espnow_data_cb);
-  if (ESP_OK != ret) {
-    ESP_LOGE(TAG, "Failed to set VSCP event callback");
-  }
+  vscp_espnow_config_t vscp_espnow_conf;
+  vscp_espnow_conf.pmk   = g_persistent.pmk;
+  vscp_espnow_conf.lmk   = g_persistent.lmk;
+  vscp_espnow_conf.pguid = g_persistent.nodeGuid;
 
-  // Start heartbeat task vscp_heartbeat_task
-  xTaskCreate(&vscp_espnow_heartbeat_task, "vscp_espnow_heartbeat_task", 1024 * 3, NULL, tskIDLE_PRIORITY + 1, NULL);
+  // Set default primary key
+  uint8_t pmk[16];
+  vscp_fwhlp_hex2bin(pmk, 16, VSCP_DEFAULT_KEY16);
+  vscp_espnow_conf.pmk = pmk;
+
+  // Initialize VSCP espnow
+  if (ESP_OK != vscp_espnow_init(&vscp_espnow_conf)) {
+    ESP_LOGI(TAG, "Failed to initialize VSCP espnow");
+  }
 
   esp_wifi_get_mac(ESP_IF_WIFI_STA, ESPNOW_ADDR_SELF);
   ESP_LOGI(TAG, "mac: " MACSTR ", version: %d", MAC2STR(ESPNOW_ADDR_SELF), ESPNOW_VERSION);
+  ESP_LOG_BUFFER_HEXDUMP(TAG, g_persistent.lmk, 16, ESP_LOG_INFO);
+  // ESP_LOGI(TAG, "lmk:%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X", g_persistent.lmk);
 
   while (1) {
     // esp_task_wdt_reset();
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    // ESP_LOGI(TAG, "heap %lu kB (%lu)",esp_get_minimum_free_heap_size()/1024,esp_get_minimum_free_heap_size());
+    vTaskDelay(pdMS_TO_TICKS(5000));
     taskYIELD();
   }
 }

@@ -46,7 +46,6 @@
 
 #define DEV_BUFFER_LENGTH 64
 
-
 /*!
   Default values stored in non volatile memory
   on start up.
@@ -56,22 +55,21 @@
 
 // ----------------------------------------------------------------------------
 
-
-
 typedef struct {
 
   // Module
   char nodeName[32];    // User name for node
-  uint8_t pmk[16];      // Primary key
+  uint8_t pmk[16];      // Primary key (System wide)
+  uint8_t lmk[16];      // Local key (for this device)
   uint8_t nodeGuid[16]; // GUID for node (default: Constructed from MAC address)
-  uint8_t queueSize;   // espnow queue size
+  uint8_t queueSize;    // espnow queue size
   uint8_t startDelay;   // Delay before wifi is enabled (to charge cap)
   uint32_t bootCnt;     // Number of restarts (not editable)
 
   // espnow
   bool espnowLongRange;             // Enable long range mode
   uint8_t espnowSizeQueue;          // Input queue size
-  uint8_t espnowChannel;           // Channel to use (zero is current)
+  uint8_t espnowChannel;            // Channel to use (zero is current)
   uint8_t espnowTtl;                // Default ttl
   bool espnowForwardEnable;         // Forward when packets are received
   bool espnowFilterAdjacentChannel; // Don't receive if from other channel
@@ -84,10 +82,10 @@ typedef struct {
 /*!
   ESP-NOW
 */
-#define ESPNOW_SIZE_TX_BUF 10 /*!< Size for transmitt buffer >*/
-#define ESPNOW_SIZE_RX_BUF 20 /*!< Size for receive buffer >*/
-#define ESPNOW_MAXDELAY 512 // Ticks to wait for send queue access
-#define ESPNOW_QUEUE_SIZE 6
+#define ESPNOW_SIZE_TX_BUF 10  /*!< Size for transmitt buffer >*/
+#define ESPNOW_SIZE_RX_BUF 20  /*!< Size for receive buffer >*/
+#define ESPNOW_MAXDELAY    512 // Ticks to wait for send queue access
+#define ESPNOW_QUEUE_SIZE  6
 
 #define IS_BROADCAST_ADDR(addr) (memcmp(addr, s_vscp_broadcast_mac, ESP_NOW_ETH_ALEN) == 0)
 
@@ -139,8 +137,6 @@ typedef enum {
 } beta_cb_event_t;
 
 // ----------------------------------------------------------------------------
-
-
 
 /**
  * @brief Read processor on chip temperature

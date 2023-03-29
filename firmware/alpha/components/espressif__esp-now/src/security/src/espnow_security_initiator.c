@@ -159,6 +159,7 @@ esp_err_t espnow_sec_initiator_scan(espnow_sec_responder_t **info_list, size_t *
 
     for (int i = 0, start_ticks = xTaskGetTickCount(), recv_ticks = 500; i < 5 && wait_ticks - (xTaskGetTickCount() - start_ticks) > 0;
             ++i, recv_ticks = pdMS_TO_TICKS(500)) {
+        printf("Sending security probe channel = %d\n", frame_head.channel );      
         ret = espnow_send(ESPNOW_DATA_TYPE_SECURITY, ESPNOW_ADDR_BROADCAST, &request_sec_info, 1, &frame_head, portMAX_DELAY);
         ESP_ERROR_RETURN(ret != ESP_OK, ret, "espnow_send");
 
@@ -211,6 +212,8 @@ static esp_err_t espnow_initiator_sec_process(uint8_t *src_addr, void *data,
     ESP_PARAM_CHECK(data);
     ESP_PARAM_CHECK(size);
     ESP_PARAM_CHECK(rx_ctrl);
+
+    ESP_LOGI(TAG, "----> espnow_initiator_sec_process");
 
     if (g_sec_queue) {
         espnow_sec_data_t sec_data = { 0 };
@@ -424,8 +427,11 @@ static esp_err_t protocomm_espnow_initiator_stop()
     return ESP_OK;
 }
 
-esp_err_t espnow_sec_initiator_start(uint8_t key_info[APP_KEY_LEN], const char *pop_data, const uint8_t addrs_list[][6], size_t addrs_num,
-                                    espnow_sec_result_t *res)
+esp_err_t espnow_sec_initiator_start(uint8_t key_info[APP_KEY_LEN], 
+                                        const char *pop_data, 
+                                        const uint8_t addrs_list[][6], 
+                                        size_t addrs_num,
+                                        espnow_sec_result_t *res)
 {
     ESP_PARAM_CHECK(key_info);
     ESP_PARAM_CHECK(pop_data);

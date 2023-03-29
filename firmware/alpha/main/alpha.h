@@ -72,6 +72,7 @@ typedef struct {
   // Module
   char nodeName[32];    // Friendly name for node
   uint8_t pmk[16];      // Primary key
+  uint8_t lmk[16];      // Local key
   uint8_t nodeGuid[16]; // GUID for node (default: Constructed from MAC address)
   uint32_t queueSize;   // espnow queue size
   uint8_t startDelay;   // Delay before wifi is enabled (to charge cap)

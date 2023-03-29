@@ -387,13 +387,3 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/wifi_provisioning/cmake_install.cmake")
 endif()
 
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/espressif__esp-now/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/usr/local/src/VSCP/can4vscp-frankfurt-wifi/firmware/security_initiator/build/esp-idf/main/cmake_install.cmake")
-endif()
-

@@ -308,16 +308,6 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
-# Example Configuration
-#
-CONFIG_APP_ESPNOW_RETRY_NUM=15
-CONFIG_APP_ESPNOW_SESSION_POP="vscptest"
-CONFIG_APP_ESPNOW_SEC_INITIATOR=y
-# CONFIG_APP_ESPNOW_SEC_RESPONDER is not set
-CONFIG_APP_ESPNOW_SEC_MODE=0
-# end of Example Configuration
-
-#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEFAULT=y
@@ -1491,53 +1481,6 @@ CONFIG_WPA_MBEDTLS_TLS_CLIENT=y
 # CONFIG_WPA_11R_SUPPORT is not set
 # CONFIG_WPA_WPS_SOFTAP_REGISTRAR is not set
 # end of Supplicant
-
-#
-# ESP-NOW Configuration
-#
-
-#
-# ESP-NOW Security Configuration
-#
-CONFIG_ESPNOW_APP_SECURITY=y
-# end of ESP-NOW Security Configuration
-
-#
-# ESP-NOW Utils Configuration
-#
-CONFIG_ESPNOW_MEM_ALLOCATION_DEFAULT=y
-CONFIG_ESPNOW_MEM_DEBUG=y
-CONFIG_ESPNOW_MEM_DBG_INFO_MAX=128
-CONFIG_ESPNOW_NVS_NAMESPACE="espnow"
-CONFIG_ESPNOW_REBOOT_UNBROKEN_INTERVAL_TIMEOUT=5000
-CONFIG_ESPNOW_REBOOT_UNBROKEN_FALLBACK_COUNT=30
-# end of ESP-NOW Utils Configuration
-
-#
-# ESP-NOW Debug Configuration
-#
-
-#
-# Debug console Configuration
-#
-CONFIG_ESPNOW_STORE_HISTORY=y
-# end of Debug console Configuration
-
-#
-# Debug Log Configuration
-#
-CONFIG_ESPNOW_DEBUG_LOG_PARTITION_LABEL_DATA="log_info"
-CONFIG_ESPNOW_DEBUG_LOG_PARTITION_LABEL_NVS="log_status"
-CONFIG_ESPNOW_DEBUG_LOG_FILE_MAX_SIZE=65536
-CONFIG_ESPNOW_DEBUG_LOG_PARTITION_OFFSET=0
-# CONFIG_ESPNOW_DEBUG_LOG_PRINTF_ENABLE is not set
-# end of Debug Log Configuration
-
-CONFIG_ESPNOW_DEBUG_CONSOLE_UART_NUM_0=y
-# CONFIG_ESPNOW_DEBUG_CONSOLE_UART_NUM_1 is not set
-CONFIG_ESPNOW_DEBUG_CONSOLE_UART_NUM=0
-# end of ESP-NOW Debug Configuration
-# end of ESP-NOW Configuration
 # end of Component config
 
 # Deprecated options for backward compatibility

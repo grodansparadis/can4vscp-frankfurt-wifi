@@ -102,6 +102,8 @@
     "esp_wifi_types.h": "c",
     "urldecode.h": "c",
     "vscp-projdefs.h": "c",
-    "vscp-droplet.h": "c"
+    "vscp-droplet.h": "c",
+    "esp_sleep.h": "c",
+    "esp_err.h": "c"
   }
 }

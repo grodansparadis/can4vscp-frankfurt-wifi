@@ -11,11 +11,12 @@
 //#define VSCP_PROJDEF_LED_STRIP
 #define VSCP_PROJDEF_LED_SIMPLE
 
-#define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCP-DROPLET"
+#define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCPDEVICE"
 
 /*!
   Name of device for level II capabilities announcement event.
 */
+
 #define VSCP_PROJDEF_DEVICE_NAME "Frankfurt wifi alpha"
 
 /*!
