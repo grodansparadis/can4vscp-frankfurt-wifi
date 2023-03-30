@@ -1,4 +1,4 @@
-/* Solution Example
+/* Beta node
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
 
@@ -83,7 +83,10 @@ static const char *POP = VSCP_PROJDEF_ESPNOW_SESSION_POP;
 #define LED_STRIP_GPIO GPIO_NUM_38
 #endif
 
-static TaskHandle_t s_prov_task;
+led_indicator_handle_t s_led_handle_red;
+led_indicator_handle_t s_led_handle_green;
+
+static TaskHandle_t s_probe_task;
 
 typedef enum {
   APP_WIFI_PROV_INIT,
@@ -144,6 +147,110 @@ static app_espnow_ctrl_status_t s_espnow_ctrl_status = APP_ESPNOW_CTRL_INIT;
 
 // Handle for nvs storage
 nvs_handle_t g_nvsHandle = 0;
+
+///////////////////////////////////////////////////////////
+//        F O R W A R D  D E C L A R A T I O N S
+///////////////////////////////////////////////////////////
+
+void
+probe_task(void *arg);
+
+///////////////////////////////////////////////////////////////////////////////
+// app_led_switch_blink_type
+//
+
+void
+app_led_switch_blink_type(led_indicator_handle_t h, int type)
+{
+  static int last = 0;
+
+  led_indicator_stop(h, last);
+  led_indicator_start(s_led_handle_green, type);
+  last = type;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// get_device_guid
+//
+
+bool
+get_device_guid(uint8_t *pguid)
+{
+  esp_err_t rv;
+  size_t length = 16;
+
+  // Check pointer
+  if (NULL == pguid) {
+    return false;
+  }
+
+  rv = nvs_get_blob(g_nvsHandle, "guid", pguid, &length);
+  switch (rv) {
+
+    case ESP_OK:
+      break;
+
+    case ESP_ERR_NVS_NOT_FOUND:
+      printf("GUID not found in nvs\n");
+      return false;
+
+    default:
+      printf("Error (%s) reading GUID from nvs!\n", esp_err_to_name(rv));
+      return false;
+  }
+
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// app_led_init
+//
+
+static void
+app_led_init(void)
+{
+  led_indicator_gpio_config_t led_indicator_gpio_red_config = {
+    .gpio_num             = PRJDEF_INDICATOR_LED_PIN_RED, /**< num of GPIO */
+    .is_active_level_high = 1,
+  };
+
+  // Initialize red LED indicator
+  led_indicator_config_t indicator_config_red = {
+    .mode                      = LED_GPIO_MODE,
+    .led_indicator_gpio_config = &led_indicator_gpio_red_config,
+    .blink_lists               = default_led_indicator_blink_lists,
+    .blink_list_num            = DEFAULT_BLINK_LIST_NUM,
+  };
+
+  // s_led_handle_green = led_indicator_create(PRJDEF_INDICATOR_LED_PIN_GREEN, &indicator_config_green);
+  s_led_handle_red = led_indicator_create(&indicator_config_red);
+  if (NULL == s_led_handle_green) {
+    ESP_LOGE(TAG, "Failed to create LED indicator red");
+  }
+
+  led_indicator_gpio_config_t led_indicator_gpio_green_config = {
+    .gpio_num             = PRJDEF_INDICATOR_LED_PIN_GREEN, /**< num of GPIO */
+    .is_active_level_high = 1,
+  };
+
+  // Initialize green LED indicator
+  led_indicator_config_t indicator_config_green = {
+    .mode                      = LED_GPIO_MODE,
+    .led_indicator_gpio_config = &led_indicator_gpio_green_config,
+    .blink_lists               = default_led_indicator_blink_lists,
+    .blink_list_num            = DEFAULT_BLINK_LIST_NUM,
+  };
+  // led_indicator_config_t indicator_config_red = {
+  //   .off_level = 0, // if zero, attach led positive side to esp32 gpio pin
+  //   .mode      = LED_GPIO_MODE,
+  // };
+
+  // s_led_handle_red = led_indicator_create(PRJDEF_INDICATOR_LED_PIN_RED, &indicator_config_red);
+  s_led_handle_green = led_indicator_create(&indicator_config_green);
+  if (NULL == s_led_handle_red) {
+    ESP_LOGE(TAG, "Failed to create LED indicator green");
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // setPersistenDefaults
@@ -267,7 +374,7 @@ readPersistentConfigs(void)
       break;
 
     case ESP_ERR_NVS_NOT_FOUND:
-      rv = nvs_set_str(g_nvsHandle, "node_name", "Alpha Node");
+      rv = nvs_set_str(g_nvsHandle, "node_name", g_persistent.nodeName);
       if (rv != ESP_OK) {
         ESP_LOGE(TAG, "Failed to update node name");
       }
@@ -493,24 +600,24 @@ app_espnow_event_handler(void *handler_args, esp_event_base_t base, int32_t id, 
 // app_responder_ctrl_data_cb
 //
 
-static void
-app_responder_ctrl_data_cb(espnow_attribute_t initiator_attribute,
-                           espnow_attribute_t responder_attribute,
-                           uint32_t status)
-{
-  ESP_LOGI(TAG,
-           "app_responder_ctrl_data_cb, initiator_attribute: %d, responder_attribute: %d, value: %" PRIu32 "",
-           initiator_attribute,
-           responder_attribute,
-           status);
+// static void
+// app_responder_ctrl_data_cb(espnow_attribute_t initiator_attribute,
+//                            espnow_attribute_t responder_attribute,
+//                            uint32_t status)
+// {
+//   ESP_LOGI(TAG,
+//            "app_responder_ctrl_data_cb, initiator_attribute: %d, responder_attribute: %d, value: %" PRIu32 "",
+//            initiator_attribute,
+//            responder_attribute,
+//            status);
 
-  if (status) {
-    // app_led_set_color(255, 255, 255);
-  }
-  else {
-    // app_led_set_color(0, 0, 0);
-  }
-}
+//   if (status) {
+//     // app_led_set_color(255, 255, 255);
+//   }
+//   else {
+//     // app_led_set_color(0, 0, 0);
+//   }
+// }
 
 // --------------------------------------------------------------------------
 //                                  PROV
@@ -520,150 +627,150 @@ app_responder_ctrl_data_cb(espnow_attribute_t initiator_attribute,
 // app_espnow_prov_initiator_recv_cb
 //
 
-static esp_err_t
-app_espnow_prov_initiator_recv_cb(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
-{
-  esp_err_t ret;
+// static esp_err_t
+// app_espnow_prov_initiator_recv_cb(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
+// {
+//   esp_err_t ret;
 
-  ESP_PARAM_CHECK(src_addr);
-  ESP_PARAM_CHECK(data);
-  ESP_PARAM_CHECK(size);
-  ESP_PARAM_CHECK(rx_ctrl);
+//   ESP_PARAM_CHECK(src_addr);
+//   ESP_PARAM_CHECK(data);
+//   ESP_PARAM_CHECK(size);
+//   ESP_PARAM_CHECK(rx_ctrl);
 
-  ESP_LOGI(TAG,
-           "Provisioning data received. size=%zd (%d) channel=%d",
-           size,
-           size - sizeof(espnow_prov_wifi_t),
-           rx_ctrl->channel);
+//   ESP_LOGI(TAG,
+//            "Provisioning data received. size=%zd (%d) channel=%d",
+//            size,
+//            size - sizeof(espnow_prov_wifi_t),
+//            rx_ctrl->channel);
 
-  espnow_prov_wifi_t *wifi_config = (espnow_prov_wifi_t *) data;
-  if (wifi_config->custom_size != sizeof(vscp_espnow_prov_data_t)) {
-    ESP_LOGE(TAG,
-             "Provisioning custom data have wrong size %zd (should be %zd)",
-             wifi_config->custom_size,
-             sizeof(vscp_espnow_prov_data_t));
-  }
-  vscp_espnow_prov_data_t *prov_data = (vscp_espnow_prov_data_t *) wifi_config->custom_data;
-  ESP_LOG_BUFFER_HEX(TAG, data, size);
-  ESP_LOG_BUFFER_HEX(TAG, wifi_config->custom_data, sizeof(vscp_espnow_prov_data_t));
+//   espnow_prov_wifi_t *wifi_config = (espnow_prov_wifi_t *) data;
+//   if (wifi_config->custom_size != sizeof(vscp_espnow_prov_data_t)) {
+//     ESP_LOGE(TAG,
+//              "Provisioning custom data have wrong size %zd (should be %zd)",
+//              wifi_config->custom_size,
+//              sizeof(vscp_espnow_prov_data_t));
+//   }
+//   vscp_espnow_prov_data_t *prov_data = (vscp_espnow_prov_data_t *) wifi_config->custom_data;
+//   ESP_LOG_BUFFER_HEX(TAG, data, size);
+//   ESP_LOG_BUFFER_HEX(TAG, wifi_config->custom_data, sizeof(vscp_espnow_prov_data_t));
 
-  g_persistent.espnowChannel = prov_data->espnowChannel;
+//   g_persistent.espnowChannel = prov_data->espnowChannel;
 
-  // Save channel to persistent storage
-  ret = nvs_set_u8(g_nvsHandle, "channel", g_persistent.espnowChannel);
-  if (ret != ESP_OK) {
-    ESP_LOGE(TAG, "Failed to update espnow channel %X", ret);
-  }
+//   // Save channel to persistent storage
+//   ret = nvs_set_u8(g_nvsHandle, "channel", g_persistent.espnowChannel);
+//   if (ret != ESP_OK) {
+//     ESP_LOGE(TAG, "Failed to update espnow channel %X", ret);
+//   }
 
-  ESP_LOGI(TAG,
-           "MAC: " MACSTR ", Channel: %d, RSSI: %d, queue: %d, ttl: %d, forward: %d, wifi_mode: %d, ssid: %s, "
-           "password: %s, token: %s",
-           MAC2STR(src_addr),
-           rx_ctrl->channel,
-           rx_ctrl->rssi,
-           prov_data->espnowSizeQueue,
-           prov_data->espnowTtl,
-           prov_data->espnowForwardEnable,
-           wifi_config->mode,
-           wifi_config->sta.ssid,
-           wifi_config->sta.password,
-           wifi_config->token);
+//   ESP_LOGI(TAG,
+//            "MAC: " MACSTR ", Channel: %d, RSSI: %d, queue: %d, ttl: %d, forward: %d, wifi_mode: %d, ssid: %s, "
+//            "password: %s, token: %s",
+//            MAC2STR(src_addr),
+//            rx_ctrl->channel,
+//            rx_ctrl->rssi,
+//            prov_data->espnowSizeQueue,
+//            prov_data->espnowTtl,
+//            prov_data->espnowForwardEnable,
+//            wifi_config->mode,
+//            wifi_config->sta.ssid,
+//            wifi_config->sta.password,
+//            wifi_config->token);
 
-  // Set the provisioned channel
-  ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, (wifi_config_t *) &wifi_config->sta));
-  esp_wifi_set_channel(rx_ctrl->channel, WIFI_SECOND_CHAN_NONE);
-  // ESP_ERROR_CHECK(esp_wifi_connect());
-  return ESP_OK;
-}
+//   // Set the provisioned channel
+//   ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, (wifi_config_t *) &wifi_config->sta));
+//   esp_wifi_set_channel(rx_ctrl->channel, WIFI_SECOND_CHAN_NONE);
+//   // ESP_ERROR_CHECK(esp_wifi_connect());
+//   return ESP_OK;
+// }
 
 ///////////////////////////////////////////////////////////////////////////////
 // app_espnow_prov_initiator_init
 //
 
-static void
-app_espnow_prov_initiator_init(void *arg)
-{
-  esp_err_t ret                          = ESP_OK;
-  wifi_pkt_rx_ctrl_t rx_ctrl             = { 0 };
-  espnow_prov_initiator_t initiator_info = {
-    .product_id = VSCP_PROJDEF_PROVISIONING_PRODUCT_ID,
-  };
-  espnow_addr_t responder_addr           = { 0 };
-  espnow_prov_responder_t responder_info = { 0 };
+// static void
+// app_espnow_prov_initiator_init(void *arg)
+// {
+//   esp_err_t ret                          = ESP_OK;
+//   wifi_pkt_rx_ctrl_t rx_ctrl             = { 0 };
+//   espnow_prov_initiator_t initiator_info = {
+//     .product_id = VSCP_PROJDEF_PROVISIONING_PRODUCT_ID,
+//   };
+//   espnow_addr_t responder_addr           = { 0 };
+//   espnow_prov_responder_t responder_info = { 0 };
 
-  for (;;) {
+//   for (;;) {
 
-    uint8_t key_info[APP_KEY_LEN];
+//     uint8_t key_info[APP_KEY_LEN];
 
-    // Security key is not ready
-    if (espnow_get_key(key_info) != ESP_OK) {
-      ESP_LOGW(TAG, "Security key is not set - waiting for it");
-      vTaskDelay(pdMS_TO_TICKS(1000));
-      continue;
-    }
+//     // Security key is not ready
+//     if (espnow_get_key(key_info) != ESP_OK) {
+//       ESP_LOGW(TAG, "Security key is not set - waiting for it");
+//       vTaskDelay(pdMS_TO_TICKS(1000));
+//       continue;
+//     }
 
-    ret = espnow_prov_initiator_scan(responder_addr, &responder_info, &rx_ctrl, pdMS_TO_TICKS(3 * 1000));
-    ESP_ERROR_CONTINUE(ret != ESP_OK, "");
+//     ret = espnow_prov_initiator_scan(responder_addr, &responder_info, &rx_ctrl, pdMS_TO_TICKS(3 * 1000));
+//     ESP_ERROR_CONTINUE(ret != ESP_OK, "");
 
-    ESP_LOGI(TAG,
-             "MAC: " MACSTR ", Channel: %d, RSSI: %d, Product_id: %s, Device Name: %s",
-             MAC2STR(responder_addr),
-             rx_ctrl.channel,
-             rx_ctrl.rssi,
-             responder_info.product_id,
-             responder_info.device_name);
+//     ESP_LOGI(TAG,
+//              "MAC: " MACSTR ", Channel: %d, RSSI: %d, Product_id: %s, Device Name: %s",
+//              MAC2STR(responder_addr),
+//              rx_ctrl.channel,
+//              rx_ctrl.rssi,
+//              responder_info.product_id,
+//              responder_info.device_name);
 
-    ret = espnow_prov_initiator_send(responder_addr,
-                                     &initiator_info,
-                                     app_espnow_prov_initiator_recv_cb,
-                                     pdMS_TO_TICKS(3 * 1000));
-    ESP_ERROR_CONTINUE(ret != ESP_OK, "<%s> espnow_prov_responder_add", esp_err_to_name(ret));
+//     ret = espnow_prov_initiator_send(responder_addr,
+//                                      &initiator_info,
+//                                      app_espnow_prov_initiator_recv_cb,
+//                                      pdMS_TO_TICKS(3 * 1000));
+//     ESP_ERROR_CONTINUE(ret != ESP_OK, "<%s> espnow_prov_responder_add", esp_err_to_name(ret));
 
-    ESP_LOGI(TAG, "===> Provisioned");
-    break;
-  }
+//     ESP_LOGI(TAG, "===> Provisioned");
+//     break;
+//   }
 
-  ESP_LOGI(TAG, "provisioning initiator exit");
-  vTaskDelete(NULL);
-  s_prov_task = NULL;
-}
+//   ESP_LOGI(TAG, "provisioning initiator exit");
+//   vTaskDelete(NULL);
+//   s_prov_task = NULL;
+// }
 
-static esp_err_t
-app_espnow_prov_responder_recv_cb(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
-{
-  ESP_PARAM_CHECK(src_addr);
-  ESP_PARAM_CHECK(data);
-  ESP_PARAM_CHECK(size);
-  ESP_PARAM_CHECK(rx_ctrl);
+// static esp_err_t
+// app_espnow_prov_responder_recv_cb(uint8_t *src_addr, void *data, size_t size, wifi_pkt_rx_ctrl_t *rx_ctrl)
+// {
+//   ESP_PARAM_CHECK(src_addr);
+//   ESP_PARAM_CHECK(data);
+//   ESP_PARAM_CHECK(size);
+//   ESP_PARAM_CHECK(rx_ctrl);
 
-  espnow_prov_initiator_t *initiator_info = (espnow_prov_initiator_t *) data;
-  /**
-   * @brief Authenticate the device through the information of the initiator
-   */
-  ESP_LOGI(TAG,
-           "MAC: " MACSTR ", Channel: %d, RSSI: %d, Product_id: %s, Device Name: %s, Auth Mode: %d, device_secret: %s",
-           MAC2STR(src_addr),
-           rx_ctrl->channel,
-           rx_ctrl->rssi,
-           initiator_info->product_id,
-           initiator_info->device_name,
-           initiator_info->auth_mode,
-           initiator_info->device_secret);
+//   espnow_prov_initiator_t *initiator_info = (espnow_prov_initiator_t *) data;
+//   /**
+//    * @brief Authenticate the device through the information of the initiator
+//    */
+//   ESP_LOGI(TAG,
+//            "MAC: " MACSTR ", Channel: %d, RSSI: %d, Product_id: %s, Device Name: %s, Auth Mode: %d, device_secret: %s",
+//            MAC2STR(src_addr),
+//            rx_ctrl->channel,
+//            rx_ctrl->rssi,
+//            initiator_info->product_id,
+//            initiator_info->device_name,
+//            initiator_info->auth_mode,
+//            initiator_info->device_secret);
 
-  return ESP_OK;
-}
+//   return ESP_OK;
+// }
 
-esp_err_t
-app_espnow_prov_beacon_start(int32_t sec)
-{
-  esp_err_t ret;
+// esp_err_t
+// app_espnow_prov_beacon_start(int32_t sec)
+// {
+//   esp_err_t ret;
 
-  /* clang-format off */
-  wifi_config_t wifi_config              = { 0 };
-  espnow_prov_wifi_t prov_wifi_config    = { 0 };
-  espnow_prov_responder_t responder_info = { 
-      .product_id = "responder_test" 
-  };
+//   /* clang-format off */
+//   wifi_config_t wifi_config              = { 0 };
+//   espnow_prov_wifi_t prov_wifi_config    = { 0 };
+//   espnow_prov_responder_t responder_info = { 
+//       .product_id = "responder_test" 
+//   };
   /* clang-format on */
 
   // esp_err_t ret = esp_wifi_get_config(WIFI_IF_STA, &wifi_config);
@@ -679,71 +786,73 @@ app_espnow_prov_beacon_start(int32_t sec)
 
   // memcpy(&prov_wifi_config.sta, &wifi_config.sta, sizeof(wifi_sta_config_t));
 
-  ret = espnow_prov_responder_start(&responder_info,
-                                    pdMS_TO_TICKS(sec * 1000),
-                                    &prov_wifi_config,
-                                    app_espnow_prov_responder_recv_cb);
-  if (ret != ESP_OK) {
-    ESP_LOGE(TAG, "espnow_prov_responder_start failed, %d", ret);
-  }
+//   ret = espnow_prov_responder_start(&responder_info,
+//                                     pdMS_TO_TICKS(sec * 1000),
+//                                     &prov_wifi_config,
+//                                     app_espnow_prov_responder_recv_cb);
+//   if (ret != ESP_OK) {
+//     ESP_LOGE(TAG, "espnow_prov_responder_start failed, %d", ret);
+//   }
 
-  return ret;
-}
+//   return ret;
+// }
 
-static void
-app_espnow_prov_responder_task(void *arg)
-{
-  for (;;) {
-    vTaskDelay(pdMS_TO_TICKS(1000));
+// static void
+// app_espnow_prov_responder_task(void *arg)
+// {
+//   for (;;) {
+//     vTaskDelay(pdMS_TO_TICKS(1000));
 
-    /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
-     * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
-    EventBits_t bits =
-      xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
+//     /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
+//      * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
+//     EventBits_t bits =
+//       xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
 
-    /* xEventGroupWaitBits() returns the bits before the call returned, hence we can test which event actually
-     * happened. */
-    if (bits & WIFI_CONNECTED_BIT) {
-      ESP_LOGD(TAG, "connected to ap");
-    }
-    else if (bits & WIFI_FAIL_BIT) {
-      ESP_LOGD(TAG, "Failed to connect to ap");
-      continue;
-    }
-    else {
-      ESP_LOGE(TAG, "UNEXPECTED EVENT");
-      continue;
-    }
+//     /* xEventGroupWaitBits() returns the bits before the call returned, hence we can test which event actually
+//      * happened. */
+//     if (bits & WIFI_CONNECTED_BIT) {
+//       ESP_LOGD(TAG, "connected to ap");
+//     }
+//     else if (bits & WIFI_FAIL_BIT) {
+//       ESP_LOGD(TAG, "Failed to connect to ap");
+//       continue;
+//     }
+//     else {
+//       ESP_LOGE(TAG, "UNEXPECTED EVENT");
+//       continue;
+//     }
 
-    if (app_espnow_prov_beacon_start(30) != ESP_OK) {
-      break;
-    }
+//     if (app_espnow_prov_beacon_start(30) != ESP_OK) {
+//       break;
+//     }
 
-    // Clear WIFI_CONNECTED_BIT to restart responder when reconnection
-    xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-  }
+//     // Clear WIFI_CONNECTED_BIT to restart responder when reconnection
+//     xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+//   }
 
-  ESP_LOGI(TAG, "provisioning responder exit");
-  vTaskDelete(NULL);
-}
+//   ESP_LOGI(TAG, "provisioning responder exit");
+//   vTaskDelete(NULL);
+// }
 
 ///////////////////////////////////////////////////////////////////////////////
-// app_start_beacon_press_cb
+// app_sec_init_press_cb
 //
 
 static void
-app_start_beacon_press_cb(void *arg, void *usr_data)
+app_sec_init_press_cb(void *arg, void *usr_data)
 {
   ESP_ERROR_CHECK(!(BUTTON_SINGLE_CLICK == iot_button_get_event(arg)));
-  ESP_LOGI(TAG, "Starting sec");
-  // espnow_sec_responder_start(POP);
-  //  app_espnow_responder();
-  //  app_espnow_responder();
-  //   app_espnow_prov_beacon_start(30);
-  //  xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
 
-  vscp_espnow_probe();
-  espnow_sec_responder_start(POP);
+  uint8_t key_info[APP_KEY_LEN];
+  if (espnow_get_key(key_info) == ESP_OK) {
+    ESP_LOGW(TAG, "Security key is already set.");
+    return;
+  }
+
+  ESP_LOGI(TAG, "Starting sec init");
+
+  s_probe_task = xTaskCreate(probe_task, "probe", 3072, NULL, tskIDLE_PRIORITY + 1, NULL);
+  //espnow_sec_responder_start(POP);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -769,7 +878,7 @@ app_wifi_prov_start_press_cb(void *arg, void *usr_data)
 
     if (!s_prov_task) {
       ESP_LOGI(TAG, "Start WiFi provisioning over ESP-NOW on responder");
-      xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
+      //xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
     }
 
     s_wifi_prov_status = APP_WIFI_PROV_START;
@@ -785,24 +894,51 @@ app_wifi_prov_start_press_cb(void *arg, void *usr_data)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// app_long_press_start_cb
+//
+
+// static void
+// app_long_press_start_cb(void *arg, void *usr_data)
+// {
+//   ESP_ERROR_CHECK(!(BUTTON_LONG_PRESS_START == iot_button_get_event(arg)));
+//   printf("------------------------------------\n");
+//   led_indicator_stop(s_led_handle_green, BLINK_CONNECTING);
+//   led_indicator_preempt_start(s_led_handle_green, BLINK_FACTORY_RESET);
+//   //s_restore_defaults_timer = getMilliSeconds();
+// }
+
+///////////////////////////////////////////////////////////////////////////////
 // app_wifi_prov_reset_press_cb
 //
 
 static void
 app_wifi_prov_reset_press_cb(void *arg, void *usr_data)
 {
+  esp_err_t ret;
+
   ESP_ERROR_CHECK(!(BUTTON_LONG_PRESS_START == iot_button_get_event(arg)));
-
-  ESP_LOGI(TAG, "Restore factory defaults");
-
-  espnow_erase_key();     // Unbound device
-  setPersistenDefaults(); // set defaults
+  
+  ESP_LOGI(TAG, "Restore factory settings");
 
   // Erase all settings
-  nvs_flash_erase_partition("config");
+  ret = nvs_erase_all(g_nvsHandle);
+  if (ESP_OK != ret) {
+    ESP_LOGE(TAG, "Unable to erase configuration area");
+  }
+  
+  // Unbound device
+  espnow_erase_key();     
+
+  nvs_commit(g_nvsHandle);
+
+  // set defaults
+  setPersistenDefaults(); 
 
   // Disconnect from wifi
-  esp_wifi_disconnect();
+  ret = esp_wifi_disconnect();
+  if (ESP_OK != ret) {
+    ESP_LOGE(TAG, "Failed to disconnect from wifi %X", ret);
+  }
 
   // Restart system (set defaults)
   esp_restart();
@@ -1060,6 +1196,29 @@ app_espnow_responder()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// probe_task
+//
+
+void
+probe_task(void *arg)
+{
+  int rv;
+
+  espnow_sec_responder_start(POP);
+
+  if (VSCP_ERROR_SUCCESS != (rv = vscp_espnow_probe())) {
+    ESP_LOGE(TAG, "[%s, %d]: <Probe failed> !(%x)", __func__, __LINE__, rv);
+    // goto EXIT;
+  }
+
+  //espnow_sec_responder_start(POP);
+
+  // vTaskDelay(pdMS_TO_TICKS(100));
+  // EXIT:
+  vTaskDelete(NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // app_main
 //
 
@@ -1067,11 +1226,15 @@ void
 app_main()
 {
   esp_err_t ret;
+  bool bKeyFound = false; // set to true if key can be read
 
   s_wifi_event_group = xEventGroupCreate();
 
   espnow_storage_init();
   app_wifi_init();
+
+  app_led_init();
+  app_led_switch_blink_type(s_led_handle_green, BLINK_CONNECTING);
 
   // ----------------------------------------------------------------------------
   //                        NVS - Persistent storage
@@ -1080,7 +1243,7 @@ app_main()
   // Init persistent storage
   ESP_LOGI(TAG, "Read persistent storage ... ");
 
-  ret = nvs_open("config", NVS_READWRITE, &g_nvsHandle);
+  ret = nvs_open("cfgbeta", NVS_READWRITE, &g_nvsHandle);
   if (ret != ESP_OK) {
     ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(ret));
   }
@@ -1089,19 +1252,36 @@ app_main()
     readPersistentConfigs();
   }
 
-  // Set the provisioned channel
-  // esp_wifi_set_channel(0xf/*g_persistent.espnowChannel*/, WIFI_SECOND_CHAN_NONE);
-  //esp_wifi_set_channel(8, WIFI_SECOND_CHAN_NONE);
+  uint8_t key_info[APP_KEY_LEN];
+  if (espnow_get_key(key_info) == ESP_OK) {
+    bKeyFound = true;
+    espnow_set_key(key_info);
+  }
+  else {
+    ESP_LOGW(TAG, "Security key is not set");
+    // esp_fill_random(key_info, 32);
+    //  vscp_fwhlp_hex2bin(key, 32, "a3ea2c7811f37e29ed6a677da9d9bdedef64f3541dd0c27dd17ea6c127027efe");
+    // espnow_set_key(key_info);
+  }
+
+  // Set the probed channel
+  if (g_persistent.espnowChannel) {
+    esp_wifi_set_channel(g_persistent.espnowChannel, WIFI_SECOND_CHAN_NONE);
+  }
 
   espnow_config_t espnow_config = ESPNOW_INIT_CONFIG_DEFAULT();
   // memcpy((uint8_t *) espnow_config.pmk, g_persistent.pmk, 16);
   espnow_config.qsize          = CONFIG_APP_ESPNOW_QUEUE_SIZE;
   espnow_config.sec_enable     = true;
   espnow_config.forward_enable = true;
+
   espnow_init(&espnow_config);
+
+  //esp_wifi_set_channel(3, WIFI_SECOND_CHAN_NONE);
 
   button_config_t button_config = {
         .type = BUTTON_TYPE_GPIO,
+        .long_press_time = 3000,
         .gpio_button_config = {
             .gpio_num = WIFI_PROV_KEY_GPIO,
             .active_level = 0,
@@ -1110,35 +1290,15 @@ app_main()
 
   button_handle_t button_handle = iot_button_create(&button_config);
 
-  iot_button_register_cb(button_handle, BUTTON_SINGLE_CLICK, app_start_beacon_press_cb, NULL);
+  iot_button_register_cb(button_handle, BUTTON_SINGLE_CLICK, app_sec_init_press_cb, NULL);
   iot_button_register_cb(button_handle, BUTTON_DOUBLE_CLICK, app_wifi_prov_start_press_cb, NULL);
+  //iot_button_register_cb(button_handle, BUTTON_LONG_PRESS_START, app_long_press_start_cb, NULL);
   iot_button_register_cb(button_handle, BUTTON_LONG_PRESS_START, app_wifi_prov_reset_press_cb, NULL);
-
-  // Set default primary key
-  vscp_fwhlp_hex2bin(g_persistent.pmk, 16, VSCP_DEFAULT_KEY16);
-
-  uint8_t key_info[APP_KEY_LEN];
-  if (espnow_get_key(key_info) == ESP_OK) {
-    espnow_set_key(key_info);
-  }
-  else {
-    esp_fill_random(key_info, 32);
-    // vscp_fwhlp_hex2bin(key, 32, "a3ea2c7811f37e29ed6a677da9d9bdedef64f3541dd0c27dd17ea6c127027efe");
-    espnow_set_key(key_info);
-  }
 
   esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ANY_ID, app_espnow_event_handler, NULL);
   esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, app_wifi_event_handler, NULL);
   esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, app_wifi_event_handler, NULL);
 
-  esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ESPNOW_CTRL_BIND, app_espnow_event_handler, NULL);
-  esp_event_handler_register(ESP_EVENT_ESPNOW, ESP_EVENT_ESPNOW_CTRL_UNBIND, app_espnow_event_handler, NULL);
-
-  // Controller bind
-  // ESP_ERROR_CHECK(espnow_ctrl_responder_bind(30 * 1000, -55, NULL));
-  // espnow_ctrl_responder_data(app_responder_ctrl_data_cb);
-
-  // app_espnow_responder();
 
   // xTaskCreate(app_espnow_prov_initiator_init, "PROV_init", 3072, NULL, tskIDLE_PRIORITY + 1, &s_prov_task);
 
@@ -1150,9 +1310,9 @@ app_main()
   vscp_espnow_conf.pguid = g_persistent.nodeGuid;
 
   // Set default primary key
-  uint8_t pmk[16];
-  vscp_fwhlp_hex2bin(pmk, 16, VSCP_DEFAULT_KEY16);
-  vscp_espnow_conf.pmk = pmk;
+  // uint8_t pmk[16];
+  // vscp_fwhlp_hex2bin(pmk, 16, VSCP_DEFAULT_KEY16);
+  // vscp_espnow_conf.pmk = pmk;
 
   // Initialize VSCP espnow
   if (ESP_OK != vscp_espnow_init(&vscp_espnow_conf)) {
@@ -1169,5 +1329,14 @@ app_main()
     // ESP_LOGI(TAG, "heap %lu kB (%lu)",esp_get_minimum_free_heap_size()/1024,esp_get_minimum_free_heap_size());
     vTaskDelay(pdMS_TO_TICKS(5000));
     taskYIELD();
+
+    uint8_t ch                = 0;
+    wifi_second_chan_t second = 0;
+
+    if (ESP_OK != (ret = esp_wifi_get_channel(&ch, &second))) {
+      ESP_LOGE(TAG, "Failed to get wifi channel, rv = %X", ret);
+    }
+
+    //ESP_LOGI(TAG, "Loop ch=%d (%d).", ch, second);
   }
 }

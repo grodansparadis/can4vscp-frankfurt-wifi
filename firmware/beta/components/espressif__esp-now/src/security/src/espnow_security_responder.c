@@ -125,7 +125,7 @@ static esp_err_t espnow_sec_responder_process(uint8_t *src_addr, void *data,
     ESP_PARAM_CHECK(data);
     ESP_PARAM_CHECK(size);
     ESP_PARAM_CHECK(rx_ctrl);
-    printf("responder\n");
+
     esp_err_t ret = ESP_OK;
     uint8_t data_type = ((uint8_t *)data)[0];
     espnow_add_peer(src_addr, NULL);

@@ -38,7 +38,7 @@
 #include <vscp.h>
 #include <vscp-espnow.h>
 
-#define NODETYPE VSCP_DROPLET_ALPHA
+//#define NODETYPE VSCP_DROPLET_ALPHA
 
 #define CONNECTED_LED_GPIO_NUM 2
 #define ACTIVE_LED_GPIO_NUM    3

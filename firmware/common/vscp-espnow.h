@@ -113,20 +113,33 @@ extern "C" {
   Gamma nodes can only be in CLIENT state and idle.
 */
 typedef enum {
-  VSCP_ESPNOW_STATE_IDLE,        // Normal state for all nodes, but may be uninitialized.
-  VSCP_ESPNOW_STATE_CLIENT_INIT, // Initialization state for Beta/Gamma nodes.
-  VSCP_ESPNOW_STATE_SRV_INIT1,   // Server initialization state 1 (Alpha/Beta nodes)  Waiting for heartbeat.
-  VSCP_ESPNOW_STATE_SRV_INIT2,   // Server initialization state 2 (Alpha/Beta nodes). Waiting for new node on-line
-  VSCP_ESPNOW_STATE_CLIENT_OTA,  // OTA state for all nodes being updated.
-  VSCP_ESPNOW_STATE_SRV_OTA      // OTA state for Alpha/Beta/Gamma nodes that serve firmware.
+  VSCP_ESPNOW_STATE_VIRGIN, // A node that is uninitialized
+  VSCP_ESPNOW_STATE_IDLE,   // Normal state for all nodes. Initialized.
+  VSCP_ESPNOW_STATE_PROBE,  // Probe in progress (alpha/beta).
+  VSCP_ESPNOW_STATE_OTA,    // OTA in progress.
 } vscp_espnow_state_t;
+
+// The event queue
+
+typedef enum {
+  VSCP_ESPNOW_ALPHA_PROBE,
+  VSCP_ESPNOW_RECV_CB,
+} vscp_espnow_event_id_t;
+
+/* When ESPNOW sending or receiving callback function is called, post event to ESPNOW task. */
+typedef struct {
+  vscp_espnow_event_id_t id;
+  //vscp_espnow_event_info_t info;
+} vscp_espnow_event_t;
+
+
 
 /**
  * @brief Initialize the configuration of esp-now
  */
 typedef struct {
-  uint8_t *pmk;  // Pointer to 16 byte system key
-  uint8_t *lmk;  // Pointer to 16 byte local key
+  uint8_t *pmk;   // Pointer to 16 byte system key
+  uint8_t *lmk;   // Pointer to 16 byte local key
   uint8_t *pguid; // Pointer to 16 byte GUID for node.
 } vscp_espnow_config_t;
 
@@ -171,6 +184,8 @@ typedef struct {
 #define VSCP_ESPNOW_SET_KEY_INTERVAL         100   // Provisioning interval in ms between set key events
 #define VSCP_ESPNOW_SRV_SEND_KEY_CNT         3
 
+ESP_EVENT_DECLARE_BASE(VSCP_ESPNOW_EVENT); // declaration of the vscp espnow events family
+
 // Control states for esp-now provisioning
 // typedef enum { VSCP_ESPNOW_CTRL_INIT, VSCP_ESPNOW_CTRL_BOUND, DROPLET_CTRL_MAX } vscp_espnow_ctrl_status_t;
 
@@ -204,6 +219,17 @@ typedef void (*vscp_espnow_attach_network_handler_cb_t)(wifi_pkt_rx_ctrl_t *prxd
 // ----------------------------------------------------------------------------
 
 /**
+ * @brief Start security initiation
+ * 
+ * @return esp_err_t 
+ */
+
+esp_err_t
+vscp_espnow_sec_initiator(void);
+
+// ----------------------------------------------------------------------------
+
+/**
  * @fn vscp_espnow_heartbeat_task
  * @brief Task that send VSCP heartbeat events every minute
  *
@@ -223,7 +249,7 @@ vscp_espnow_init(const vscp_espnow_config_t *pconfig);
 
 /**
  * @brief Send alpha probe
- * 
+ *
  * @return int VSCP_ERROR_SUCCESS if all is OK
  */
 

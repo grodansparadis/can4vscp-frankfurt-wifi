@@ -158,8 +158,7 @@ esp_err_t espnow_sec_initiator_scan(espnow_sec_responder_t **info_list, size_t *
     espnow_set_config_for_data_type(ESPNOW_DATA_TYPE_SECURITY_STATUS, 1, espnow_sec_initiator_status_process);
 
     for (int i = 0, start_ticks = xTaskGetTickCount(), recv_ticks = 500; i < 5 && wait_ticks - (xTaskGetTickCount() - start_ticks) > 0;
-            ++i, recv_ticks = pdMS_TO_TICKS(500)) {
-        printf("Sending security probe channel = %d\n", frame_head.channel );      
+            ++i, recv_ticks = pdMS_TO_TICKS(500)) {      
         ret = espnow_send(ESPNOW_DATA_TYPE_SECURITY, ESPNOW_ADDR_BROADCAST, &request_sec_info, 1, &frame_head, portMAX_DELAY);
         ESP_ERROR_RETURN(ret != ESP_OK, ret, "espnow_send");
 

@@ -500,10 +500,12 @@ esp_err_t espnow_send(espnow_data_type_t type, const espnow_addr_t dest_addr, co
 
     //printf("Send channel=%d\n", frame_head->channel);
 
-    if (g_espnow_config->sec_enable
+    if (data_head->security 
+        && g_espnow_config->sec_enable
         && type != ESPNOW_DATA_TYPE_ACK && type != ESPNOW_DATA_TYPE_FORWARD
         && type != ESPNOW_DATA_TYPE_SECURITY_STATUS && type != ESPNOW_DATA_TYPE_SECURITY) {
-        ESP_ERROR_RETURN(!(g_espnow_sec && g_espnow_sec->state == ESPNOW_SEC_OVER), ESP_FAIL, "Security key is not set");
+         printf("Encrypted\n"); 
+        ESP_ERROR_RETURN(!(g_espnow_sec && g_espnow_sec->state == ESPNOW_SEC_OVER), ESP_FAIL, "-Security key is not set");
         size_t enc_len = 0;
         espnow_data = ESP_MALLOC(sizeof(espnow_data_t) + size + g_espnow_sec->tag_len);
         ret = espnow_sec_auth_encrypt(g_espnow_sec, data, size, espnow_data->payload, size + g_espnow_sec->tag_len, &enc_len, g_espnow_sec->tag_len);
