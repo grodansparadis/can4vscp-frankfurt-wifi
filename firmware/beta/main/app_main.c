@@ -153,7 +153,7 @@ nvs_handle_t g_nvsHandle = 0;
 ///////////////////////////////////////////////////////////
 
 void
-probe_task(void *arg);
+sec_probe_task(void *arg);
 
 ///////////////////////////////////////////////////////////////////////////////
 // app_led_switch_blink_type
@@ -851,7 +851,7 @@ app_sec_init_press_cb(void *arg, void *usr_data)
 
   ESP_LOGI(TAG, "Starting sec init");
 
-  s_probe_task = xTaskCreate(probe_task, "probe", 3072, NULL, tskIDLE_PRIORITY + 1, NULL);
+  s_probe_task = xTaskCreate(sec_probe_task, "sec_probe", 3072, NULL, tskIDLE_PRIORITY + 1, NULL);
   //espnow_sec_responder_start(POP);
 }
 
@@ -1196,11 +1196,11 @@ app_espnow_responder()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// probe_task
+// sec_probe_task
 //
 
 void
-probe_task(void *arg)
+sec_probe_task(void *arg)
 {
   int rv;
 
