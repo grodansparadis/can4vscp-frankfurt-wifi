@@ -575,16 +575,12 @@ writeRegister(uint8_t *dest_addr, uint32_t address, uint8_t *value, uint32_t wai
 int
 vscp_espnow_sendEvent(const uint8_t *destAddr,
                       const vscpEvent *pev,
-                      const uint8_t *pkey,
-                      uint8_t nEncryption,
+                      bool bSec,
                       uint32_t wait_ms)
 {
   esp_err_t rv;
   uint8_t *pbuf    = NULL;
   size_t len       = vscp_espnow_getMinBufSizeEv(pev);
-  size_t frame_len = len;
-
-  // ESP_ERROR_RETURN(!s_vscp_espnow_config, VSCP_ERROR_INIT_MISSING, "ESPNOW is not initialized");
 
   // Need dest address
   if (NULL == destAddr) {
@@ -595,12 +591,6 @@ vscp_espnow_sendEvent(const uint8_t *destAddr,
   // Need event
   if (NULL == pev) {
     ESP_LOGE(TAG, "Pointer to event is NULL");
-    return VSCP_ERROR_INVALID_POINTER;
-  }
-
-  // Need key
-  if (NULL == pkey) {
-    ESP_LOGE(TAG, "Pointer to key is NULL");
     return VSCP_ERROR_INVALID_POINTER;
   }
 
@@ -617,78 +607,23 @@ vscp_espnow_sendEvent(const uint8_t *destAddr,
   }
 
   // Set encryption
-  pbuf[VSCP_ESPNOW_POS_TYPE_VER] = (PRJDEF_NODE_TYPE << 6) + (VSCP_ESPNOW_VERSION << 4) + (nEncryption & 0x0f);
+  pbuf[VSCP_ESPNOW_POS_TYPE_VER] = (PRJDEF_NODE_TYPE << 6) + (VSCP_ESPNOW_VERSION << 4) + (0 & 0x0f);
 
   // ESP_LOG_BUFFER_HEXDUMP(TAG, pbuf, len, ESP_LOG_DEBUG);
 
   ESP_LOGD(TAG, "Send mac: " MACSTR ", version: %d", MAC2STR(destAddr), VSCP_ESPNOW_VERSION);
 
-  uint8_t *outbuf = VSCP_CALLOC(len + (16 - (len % 16)) + 16 +
-                                30); // len + padding + iv + head (padding not including type and ver bytes)
-  if (NULL == outbuf) {
-    VSCP_FREE(pbuf);
-    ESP_LOGE(TAG, "Unable to allocate memory for encryption buffer");
-    return VSCP_ERROR_MEMORY;
-  }
 
-  ESP_LOGD(TAG, "Size of outbuf %d\n", len + (16 - (len % 16)) + 16 + 3);
-
-  // Encrypt frame if requested to do so
-  if (0 && (NULL != pkey) && (VSCP_ENCRYPTION_NONE != nEncryption)) {
-
-    // Fill in iv at end of send frame
-    uint8_t *piv = VSCP_CALLOC(VSCP_ESPNOW_IV_LEN);
-    if (NULL == piv) {
-      ESP_LOGE(TAG, "Unable to allocate memory for iv");
-      VSCP_FREE(outbuf);
-      VSCP_FREE(pbuf);
-      return VSCP_ERROR_MEMORY;
-    }
-
-    esp_fill_random(piv, VSCP_ESPNOW_IV_LEN);
-
-    ESP_LOGD(TAG, "---> IV:  len = %zd encryption=%d\n", len, nEncryption);
-    // ESP_LOG_BUFFER_HEXDUMP(TAG, piv, 16, ESP_LOG_DEBUG);
-
-    // frame_len += frame_len - 1 + (16 - (frame_len % 16)) + 1;
-    if (0 == (frame_len = vscp_fwhlp_encryptFrame(outbuf + 2,
-                                                  pbuf + 2,
-                                                  len - 2,
-                                                  pkey, // key
-                                                  piv,  // IV
-                                                  nEncryption))) {
-      ESP_LOGE(TAG, "Failed to encrypt frame");
-      VSCP_FREE(pbuf);
-      VSCP_FREE(piv);
-      return VSCP_ERROR_ERROR;
-    }
-
-    outbuf[0] = 0x55;
-    outbuf[1] = 0xaa;
-    frame_len += 2;
-
-    // ESP_LOG_BUFFER_HEXDUMP(TAG, outbuf, frame_len, ESP_LOG_DEBUG);
-
-    VSCP_FREE(piv);
-  }
-  else {
-    frame_len = len;
-    memcpy(outbuf, pbuf, len);
-  }
-
-  // Not needed anymore
-  VSCP_FREE(pbuf);
 
   espnow_frame_head_t espnowhead     = ESPNOW_FRAME_CONFIG_DEFAULT();
-  espnowhead.security                = false;
+  espnowhead.security                = bSec;
   espnowhead.broadcast               = true;
   espnowhead.filter_adjacent_channel = false;
-  // espnowhead.channel                 = ESPNOW_CHANNEL_ALL;
   espnowhead.forward_ttl        = 10;
   espnowhead.forward_rssi       = -55;
   espnowhead.filter_weak_signal = true;
 
-  esp_err_t ret = espnow_send(ESPNOW_DATA_TYPE_DATA, destAddr, outbuf, frame_len, &espnowhead, pdMS_TO_TICKS(wait_ms));
+  esp_err_t ret = espnow_send(ESPNOW_DATA_TYPE_DATA, destAddr, pbuf, len, &espnowhead, pdMS_TO_TICKS(wait_ms));
   if (ESP_OK != ret) {
 
     if (ESP_ERR_INVALID_ARG == ret) {
@@ -716,7 +651,7 @@ vscp_espnow_sendEvent(const uint8_t *destAddr,
   rv = VSCP_ERROR_SUCCESS;
 
 ERROR:
-  VSCP_FREE(outbuf);
+  VSCP_FREE(pbuf);
   return rv;
 }
 
@@ -1157,8 +1092,7 @@ vscp_espnow_heartbeat_task(void *pvParameter)
 
       vscp_espnow_sendEvent(ESPNOW_ADDR_BROADCAST,
                             pev,
-                            s_vscp_espnow_config.pmk,
-                            VSCP_ENCRYPTION_AES128,
+                            false,
                             pdMS_TO_TICKS(1000));
     }
 
@@ -1186,8 +1120,6 @@ vscp_espnow_init(const vscp_espnow_config_t *pconfig)
   // Create signaling bits
   s_vscp_espnow_event_group = xEventGroupCreate();
 
-  s_vscp_espnow_config.pmk   = pconfig->pmk;
-  s_vscp_espnow_config.lmk   = pconfig->lmk;
   s_vscp_espnow_config.pguid = pconfig->pguid;
 
   ret = espnow_set_config_for_data_type(ESPNOW_DATA_TYPE_DATA, true, vscp_espnow_data_cb);

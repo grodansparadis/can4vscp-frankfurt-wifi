@@ -59,17 +59,17 @@ typedef struct {
 
   // Module
   char nodeName[32];    // User name for node
-  uint8_t pmk[16];      // Primary key (System wide)
-  uint8_t lmk[16];      // Local key (for this device)
+  uint8_t pmk[16];      // Primary key (This key is static and set to VSCP default. Dont change!)
+  uint8_t lmk[16];      // Local key (This key is static and set to VSCP default)
   uint8_t nodeGuid[16]; // GUID for node (default: Constructed from MAC address)
   uint8_t queueSize;    // espnow queue size
-  uint8_t startDelay;   // Delay before wifi is enabled (to charge cap)
+  uint8_t startDelay;   // Delay before wifi is enabled (to charge cap.)
   uint32_t bootCnt;     // Number of restarts (not editable)
 
   // espnow
-  bool espnowLongRange;             // Enable long range mode
+  bool espnowLongRange;             // Enable long range mode (hidden)
   uint8_t espnowSizeQueue;          // Input queue size
-  uint8_t espnowChannel;            // Channel to use (zero is current)
+  uint8_t espnowChannel;            // Channel to use (zero is current) (hidden)
   uint8_t espnowTtl;                // Default ttl
   bool espnowForwardEnable;         // Forward when packets are received
   bool espnowFilterAdjacentChannel; // Don't receive if from other channel
@@ -90,12 +90,10 @@ typedef struct {
 #define IS_BROADCAST_ADDR(addr) (memcmp(addr, s_vscp_broadcast_mac, ESP_NOW_ETH_ALEN) == 0)
 
 // Beta node states
-// typedef enum {
-//   MAIN_STATE_WORK, // Standard working state
-//   MAIN_STATE_INIT, // Active state during init until wifi is connected
-//   MAIN_STATE_PROV, // Active state during provisioning
-//   MAIN_STATE_SET_DEFAULTS
-// } beta_node_states_t;
+typedef enum {
+  BETA_STATE_IDLE,   // Standard working state
+  BETA_STATE_VIRGIN, // Node is uninitialized
+} beta_node_states_t;
 
 ESP_EVENT_DECLARE_BASE(ALPHA_EVENT); // declaration of the alpha events family
 

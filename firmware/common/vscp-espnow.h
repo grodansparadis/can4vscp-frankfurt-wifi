@@ -138,8 +138,6 @@ typedef struct {
  * @brief Initialize the configuration of esp-now
  */
 typedef struct {
-  uint8_t *pmk;   // Pointer to 16 byte system key
-  uint8_t *lmk;   // Pointer to 16 byte local key
   uint8_t *pguid; // Pointer to 16 byte GUID for node.
 } vscp_espnow_config_t;
 
@@ -274,6 +272,7 @@ vscp_espnow_build_guid_from_mac(uint8_t *pguid, const uint8_t *pmac, uint16_t ni
  * @param destAddr Destination address. Can be NULL in which case the event
  *  is sent to all hosts in table.
  * @param pev Event to send
+ * @param bSec Set to true to send encrypted
  * @param wait_ms Time in milliseconds to wait for send
  * @return int Error code. VSCP_ERROR_SUCCESS if all is OK.
  */
@@ -281,8 +280,7 @@ vscp_espnow_build_guid_from_mac(uint8_t *pguid, const uint8_t *pmac, uint16_t ni
 int
 vscp_espnow_sendEvent(const uint8_t *destAddr,
                       const vscpEvent *pev,
-                      const uint8_t *pkey,
-                      uint8_t nEncryption,
+                      bool bSec,
                       uint32_t wait_ms);
 
 /**

@@ -8,7 +8,7 @@
 #define _VSCP_PROJDEFS_H_
 
 // Define one of
-//#define VSCP_PROJDEF_LED_STRIP
+// #define VSCP_PROJDEF_LED_STRIP
 #define VSCP_PROJDEF_LED_SIMPLE
 
 #define VSCP_PROJDEF_ESPNOW_SESSION_POP "VSCPDEVICE"
@@ -22,14 +22,14 @@
 /*!
   Number of buttons
 */
-#define VSCP_PROJDEF_BUTTON_CNT     1
+#define VSCP_PROJDEF_BUTTON_CNT 1
 
-#define VSCP_PROJDEF_ESP_MAXIMUM_RETRY  5
+#define VSCP_PROJDEF_ESP_MAXIMUM_RETRY 5
 
 /**
  * Max 16 byte product id used for provisioning
  */
-#define VSCP_PROJDEF_PROVISIONING_PRODUCT_ID   "VSCP ESPNOW"
+#define VSCP_PROJDEF_PROVISIONING_PRODUCT_ID "VSCP ESPNOW"
 
 // ----------------------------------------------------------------------------
 //                        VSCP helper lib defines
@@ -46,12 +46,12 @@
 // 16-bit nickname for node
 #define PRJDEF_NODE_NICKNAME 0
 
-// GPIO number for init button
+// GPIO number for init. button
 #define PRJDEF_INIT_BUTTON_PIN 0
 
-// GPIO number for indicator LED
-#define PRJDEF_INDICATOR_LED_PIN_GREEN  2
-#define PRJDEF_INDICATOR_LED_PIN_RED    3
+// GPIO number for indicator LED's
+#define PRJDEF_INDICATOR_LED_PIN_GREEN 2
+#define PRJDEF_INDICATOR_LED_PIN_RED   3
 
 // OTA mode
 // ESPNOW_OTA_INITATOR or ESPNOW_OTA_RESPONDEDER
@@ -137,9 +137,8 @@
 #define PRJDEF_ESPNOW_ENABLE_LONG_RANGE false
 
 // Default login credentials
-#define PRJDEF_DEFAULT_TCPIP_USER       "vscp"
-#define PRJDEF_DEFAULT_TCPIP_PASSWORD   "secret"
-
+#define PRJDEF_DEFAULT_TCPIP_USER     "vscp"
+#define PRJDEF_DEFAULT_TCPIP_PASSWORD "secret"
 
 /**
   ----------------------------------------------------------------------------
@@ -203,8 +202,6 @@
  * set to zero.
  */
 #define PRJDEF_VSCP_LINK_ENABLE_RCVLOOP_CMD (1)
-
-
 
 /**
  * If defined an UDP heartbeat is broadcasted every minute.
