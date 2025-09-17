@@ -50,3 +50,5 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+kicad/can4vscp-frankfurt-wifi-rev-A/can4vscp-frankfurt-wifi-rev-A-backups/*
+kicad/can4vscp-frankfurt-wifi-rev-A/fp-info-cache
