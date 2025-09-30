@@ -12,6 +12,6 @@ Please support the <a href="https://www.vscp.org">VSCP development</a>.
 
 Part of the VSCP Project.
 
-Copyright 2022-2025 © Åke Hedman, (Grodans Paradis AB)[https://www.grodansparadis.com]
+Copyright 2022-2025 © Åke Hedman, [Grodans Paradis AB](https://www.grodansparadis.com)
 
 <hr>
